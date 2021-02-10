@@ -2,6 +2,7 @@ import React from "react"
 import { Switch, HashRouter as Router, Route } from "react-router-dom"
 import LayoutApp from "../containers/Layouts/App"
 import Home from "../containers/Home"
+import Vault from "../containers/Vault"
 
 const createHistory = require("history").createBrowserHistory
 const history = createHistory()
@@ -10,6 +11,7 @@ const routes = {
   app: {
     routes: [
       { path: "/", component: Home, exact: true },
+      { path: "/vault", component: Vault, exact: true },
     ],
   }
 }

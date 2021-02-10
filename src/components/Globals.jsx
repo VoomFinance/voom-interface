@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next"
 import { withRouter } from "react-router-dom"
 import { nfu } from '../utils/web3'
 
+
 const Globals = (props) => {
     const { t } = useTranslation()
     const voom = useSelector((store) => store.web3.voom)
