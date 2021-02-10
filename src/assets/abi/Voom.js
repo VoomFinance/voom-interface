@@ -1052,6 +1052,13 @@ const abi = [
   },
   {
     "inputs": [],
+    "name": "reinvest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "claim",
     "outputs": [],
     "stateMutability": "nonpayable",

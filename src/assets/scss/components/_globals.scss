@@ -82,44 +82,42 @@
   max-width: 50%;
 }
 
-
 .home_container_header {
-    -webkit-box-align: center;
-    align-items: center;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 48px;
-    padding-top: 24px;
-    margin: 0px auto;
+  -webkit-box-align: center;
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 48px;
+  padding-top: 24px;
+  margin: 0px auto;
 }
 
 .home_container_header_logo {
-    font-size: 120px;
-    height: 120px;
-    line-height: 60px;
-    text-align: center;
-    width: 120px;
+  font-size: 120px;
+  height: 120px;
+  line-height: 60px;
+  text-align: center;
+  width: 120px;
 }
 
 .home_container_header_h1 {
-    font-family: "Kaushan Script", sans-serif;
-    color: rgb(255, 184, 0);
-    font-size: 36px;
-    font-weight: 700;
-    margin: 0px;
-    padding: 0px;
+  font-family: "Kaushan Script", sans-serif;
+  color: rgb(255, 184, 0);
+  font-size: 36px;
+  font-weight: 700;
+  margin: 0px;
+  padding: 0px;
 }
 
 .home_container_header_h3 {
-    color: rgb(255, 165, 0);
-    font-size: 18px;
-    font-weight: 400;
-    margin: 0px;
-    padding: 0px;
-    text-align: center;
+  color: rgb(255, 165, 0);
+  font-size: 18px;
+  font-weight: 400;
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
 }
-
 
 @media (max-width: 768px) {
   .global_father {

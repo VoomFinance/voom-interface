@@ -26,7 +26,7 @@ const Header = (props) => {
                         <Nav.Link href="#/">{t("Home")}</Nav.Link>
                         <Nav.Link href="#/vault">{t("Vault")}</Nav.Link>
                         <Nav.Link href="#/network">{t("Network")}</Nav.Link>
-                        <Nav.Link href="#/transactions">{t("Transactions")}</Nav.Link>
+                        <Nav.Link href="#/details">{t("Details")}</Nav.Link>
                     </Nav>
                     <Nav className="container_btn_connected" >
                         <Connected />

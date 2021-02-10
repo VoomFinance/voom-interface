@@ -29,7 +29,9 @@ const Deposit = (props) => {
     const [maxTokens, set_maxTokens] = useState(0)
     const [isMax, set_isMax] = useState(false)
     const [paused, set_paused] = useState(false)
-    
+    const [is_member, set_is_member] = useState(false)
+    const reinvest = useSelector((store) => store.web3.reinvest)
+
     useEffect(() => {
         if (isConnected && address !== null && token !== null) {
             window.token = token
@@ -51,8 +53,19 @@ const Deposit = (props) => {
             voomContract.methods.paused().call().then(async (result) => {
                 set_paused(result)
             })
+            voomContract.methods.isMember(address).call().then(async (result) => {
+                set_is_member(result)
+            })
         }
     }, [isConnected, address, token, reload, voomContract])
+
+    useEffect(() => {
+        if (isConnected && address !== null && voomContract !== null) {
+            voomContract.methods.vooms(address).call().then(async (result) => {
+                set_balance(new BigNumber(result.amountDeposited).div(new BigNumber(10).pow(18)))
+            })
+        }
+    }, [isConnected, address, reinvest, voomContract])
 
     useEffect(() => {
         if (isConnected && address !== null && token !== null && show === true) {
@@ -130,6 +143,13 @@ const Deposit = (props) => {
             });
             return
         }
+        if (!is_member) {
+            addToast(t("You do not have any investment to perform the action"), {
+                appearance: "error",
+                autoDismiss: true,
+            });
+            return
+        }        
         if (paused) {
             addToast(t("Withdrawals are paused at the moment, but you can claim your winnings"), {
                 appearance: "error",
@@ -216,6 +236,13 @@ const Deposit = (props) => {
             });
             return
         }
+        if (paused) {
+            addToast(t("Deposits are paused at the moment, but you can claim your winnings"), {
+                appearance: "error",
+                autoDismiss: true,
+            });
+            return
+        }        
         set_loading_deposit(true)
         let totalTokens = new BigNumber(tokens).times(new BigNumber(10).pow(18)) 
         if (isMax) {
@@ -280,8 +307,6 @@ const Deposit = (props) => {
          }
     }
 
-
-
     return (
         <>
             <div className="hyACfo">
@@ -289,7 +314,7 @@ const Deposit = (props) => {
                     <div className="cwXnKl">
                         <div className="cfevtU">
                             <div className="hbOhGN">
-                                <div className="jlrkvw">🍬</div>
+                                <div className="jlrkvw">🏦</div>
                                 <div className="fNiHrC">{nf(balance)}</div>
                                 <div className="idGrgN">{t("USDT Balance")}</div>
                             </div>

@@ -7,8 +7,8 @@ export const explorerHash = "https://bscscan.com/tx/"
 export const explorerAddress = "https://bscscan.com/address/"
 export const exchangeSwap = "https://exchange.pancakeswap.finance/"
 
-export const usdt = "0x70cb057e1CC2Ee8cFEEf311d434a88696FbfC403"
-export const voom = "0x28f9927c96b296B253F7EFC61E0355AC522D6eD8"
+export const usdt = "0xc1C807f5C90Aaa2a9f9E05C910ACD0b5D23abE23"
+export const voom = "0xAE84E20537E93AcC411B685d77f223A4A70CD021"
 export const multicallAddr = "0x1ee38d535d541c55c9dae27b12edf090c608e6fb"
 export const chef = "0xf1ABC4a5fBC9637Ac783B21A7242687faa34aD7D"
 

@@ -29,7 +29,6 @@ const Globals = (props) => {
     useEffect(() => {
         const Init = async (data) => {
             await data.then((r) => {
-                console.log(r)
                 setBalance(window.web3Read.utils.fromWei(r + '', 'ether'))
             })
         }
@@ -85,7 +84,7 @@ const Globals = (props) => {
                 <div className="global_child_footer_container">
                     {props.type === "claims" && t("Global earnings paid to users")}
                     {props.type === "bonus" && t("Fast start bonuses paid to sponsors")}
-                    {props.type === "network" && t("Commissions paid to the 7-level unilevel network")}
+                    {props.type === "network" && t("Commissions paid to the 7-level unilevel")}
                     {props.type === "withdrawals" && t("Withdrawals sent to requesting users")}
                 </div>
             }
