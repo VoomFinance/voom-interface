@@ -3,6 +3,8 @@ import { withRouter } from 'react-router-dom'
 import queryString from 'query-string'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
 
 const Layout = (props) => {
     let params = queryString.parse(props.location.search)
@@ -87,9 +89,13 @@ const Layout = (props) => {
 
     return (
         <>
+            <Header />
             <main>
-                {props.children}
+                <div>
+                    {props.children}
+                </div>
             </main>
+            <Footer />
         </>
     )
 }

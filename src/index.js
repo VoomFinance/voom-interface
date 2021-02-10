@@ -4,6 +4,7 @@ import { Provider } from 'react-redux'
 import './config/i18n'
 import 'animate.css/animate.min.css'
 import "bootstrap/dist/css/bootstrap.min.css"
+import 'bootstrap-grid-only-css/dist/css/bootstrap-grid.min.css'
 import './assets/css/main.css'
 import generateStore from './redux/store'
 import App from './App'

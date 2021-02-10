@@ -1,0 +1,137 @@
+.global_father {
+  -webkit-box-align: center;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.global_child {
+  background: rgb(255, 184, 0);
+  border: 1px solid rgb(204, 132, 0);
+  border-radius: 18px;
+  box-shadow: rgb(255, 165, 0) 1px 1px 0px inset;
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+}
+
+.global_child_separator {
+  height: 24px;
+  width: 24px;
+}
+
+.global_child_container_main {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.global_child_container_data {
+  display: flex;
+}
+
+.global_child_container_values {
+  -webkit-box-align: center;
+  align-items: center;
+  display: flex;
+  flex: 1 1 0%;
+}
+
+.global_child_container_title {
+  color: rgb(102, 66, 0);
+}
+
+.global_child_container_value {
+  font-family: "Roboto Mono", monospace;
+  color: rgb(102, 66, 0);
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.global_child_footer_container {
+  font-size: 14px;
+  padding: 8px 20px;
+  color: rgb(102, 66, 0);
+  border-top: 1px solid rgb(204, 132, 0);
+}
+
+.global_child_footer_value {
+  font-family: "Roboto Mono", monospace;
+  float: right;
+}
+
+.global_child_icon {
+  font-size: 36px;
+}
+
+.global_child_main_flex {
+  flex: 1 1 0%;
+}
+
+.global_child_footer_value_container {
+  transform: scale(1);
+  transform-origin: right bottom;
+  transition: transform 0.5s ease 0s;
+  display: inline-block;
+}
+
+.global_child_tvl {
+  width: 50% !important;
+  min-width: 50%;
+  max-width: 50%;
+}
+
+
+.home_container_header {
+    -webkit-box-align: center;
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 48px;
+    padding-top: 24px;
+    margin: 0px auto;
+}
+
+.home_container_header_logo {
+    font-size: 120px;
+    height: 120px;
+    line-height: 60px;
+    text-align: center;
+    width: 120px;
+}
+
+.home_container_header_h1 {
+    font-family: "Kaushan Script", sans-serif;
+    color: rgb(255, 184, 0);
+    font-size: 36px;
+    font-weight: 700;
+    margin: 0px;
+    padding: 0px;
+}
+
+.home_container_header_h3 {
+    color: rgb(255, 165, 0);
+    font-size: 18px;
+    font-weight: 400;
+    margin: 0px;
+    padding: 0px;
+    text-align: center;
+}
+
+
+@media (max-width: 768px) {
+  .global_father {
+    width: 100%;
+    flex-flow: column nowrap;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+  }
+
+  .global_child_tvl {
+    width: 100% !important;
+    min-width: 100%;
+    max-width: 100%;
+  }
+}

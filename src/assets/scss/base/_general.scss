@@ -1,9 +1,14 @@
 @charset "utf-8";
-@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Reem+Kufi&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap");
+
+
 
 body {
-  color: black;
-  background-color: var(--bg-main);
+  font-family: "Noto Sans",sans-serif;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
   margin: 0;
   padding: 0;
 }
@@ -13,15 +18,30 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-track {
-  background: #1e1e24;
+  background: var(--text-primary);
 }
 
 body::-webkit-scrollbar-thumb {
-  background: #6649b8;
+  background: var(--text-secondary);
 }
 
 main {
-  margin-left: 5rem;
+  margin-left: 3% !important;
+  margin-right: 3% !important;
   padding: 1rem;
   background: var(--bg-main);
 }
+
+@media (min-width: 992px) {
+  main {
+    margin-left: 16% !important;
+    margin-right: 18% !important;
+    margin-top: 0vh;
+    padding: 1rem;
+    background: var(--bg-main);
+  }
+}
+
+
+
+

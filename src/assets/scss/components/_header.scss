@@ -1,0 +1,61 @@
+.nav_header {
+  padding: 0px !important;
+  text-align: center;
+  padding-top: 10px !important;
+  padding-left: 15% !important;
+  padding-right: 15% !important;
+}
+
+@media (min-width: 992px) {
+  .nav_menu {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+.logo_header {
+    margin-top: -4px;
+}
+
+
+.navbar-dark .navbar-brand {
+    color: var(--text-primary);
+    font-family: "Reem Kufi", sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    margin-left: 8px;    
+}
+
+.navbar-dark .navbar-brand:hover {
+    color: var(--text-primary) !important;
+}
+
+
+
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--text-primary);
+}
+
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--text-secondary);
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+    color: var(--text-secondary);
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    font-weight: 700;
+    padding-top: 6px;
+    padding-left: 16px;
+    padding-right: 16px;
+    text-decoration: none !important;
+}
+
+
+
+

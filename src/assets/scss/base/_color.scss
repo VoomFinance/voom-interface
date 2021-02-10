@@ -3,18 +3,33 @@
 :root {
   font-size: 16px;
   font-family: "Open Sans";
-  --text-primary: #b6b6b6;
-  --text-secondary: #ececec;
-  --bg-primary: #23232e;
-  --bg-secondary: #141418;
-  --transition-speed: 600ms;
+
+  --bg-primary: #020213;
+  --text-primary: rgb(255, 184, 0);
+  --text-secondary: rgb(209, 108, 0);
+  --bg-connected: rgb(255, 165, 0);
+  --bg-modal: rgb(229, 148, 0);
+  --text-dark: rgb(102, 66, 0);
+
 }
 
 .dark {
+  --bg-primary: #020213;
+  --text-primary: rgb(255, 184, 0);
+  --text-secondary: rgb(209, 108, 0);
+
+
+
+
+  --bg-secondary: #141418;
+  
+  
+  
   --text-primary: #b6b6b6;
   --text-secondary: #ececec;
-  --bg-primary: #23232e;
-  --bg-secondary: #141418;
+
+
+  
   --icon-dark: #ffffff;
   --icon-light: #b6b6b6;
   /* --bg-main: #100e0e; */

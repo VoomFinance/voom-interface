@@ -178,6 +178,20 @@ const abi = [
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "TVL",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -220,6 +234,62 @@ const abi = [
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "amountBonusGlobal",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "amountGainGlobal",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "amountGainNetworkGlobal",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "amountWithdrawGlobal",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [],
@@ -647,6 +717,11 @@ const abi = [
       },
       {
         "internalType": "uint256",
+        "name": "amountDeposited",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "amountPromise",
         "type": "uint256"
       },
@@ -668,11 +743,6 @@ const abi = [
       {
         "internalType": "uint256",
         "name": "lastTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "created",
         "type": "uint256"
       },
       {
