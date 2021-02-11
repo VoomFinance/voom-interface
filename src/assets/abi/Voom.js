@@ -295,12 +295,54 @@ const abi = [
   },
   {
     "inputs": [],
+    "name": "chef",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
     "name": "commisions_percentage",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "commissions_1",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "commissions_2",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -965,6 +1007,11 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_position",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "_value",
         "type": "uint256"
       }
@@ -978,16 +1025,11 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_position",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "_value",
         "type": "uint256"
       }
     ],
-    "name": "setRefPercent",
+    "name": "setDubbing",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1032,6 +1074,24 @@ const abi = [
       }
     ],
     "name": "setLastTime",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "setDateWithdraw",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
