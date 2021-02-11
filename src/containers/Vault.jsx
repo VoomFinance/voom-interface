@@ -45,7 +45,7 @@ const Vault = () => {
             } catch (error) {
                 p = 0
             }
-            let _t = t("Our USDT farm yields maximizer is currently yielding 1111 percent per day.")
+            let _t = t("Our USDT farm yields maximizer is currently yielding 111 percent per day.")
             _t = _t.replace('1111', p)
             set_text(_t)
         }
