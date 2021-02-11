@@ -28,10 +28,24 @@ const Balance = (props) => {
     }, [block_last, block])
 
     useEffect(() => {
+        const apr_percent = (min, max, dec) => {
+            var precision = Math.pow(10, dec);
+            min = min * precision;
+            max = max * precision;
+            return Math.floor(Math.random() * (max - min + 1) + min) / precision;
+        }        
         const Init = async (data, value) => {
             await data.then((r) => {
                 if (value === "count") {
                     setBalance(r.referredUsers)
+                    return
+                }
+                if (value === "apy") {
+                    let p = parseFloat(window.web3Read.utils.fromWei(r + '', 'ether'))
+                    const min = p - (p * 5 / 100)
+                    const max = p + (p * 20 / 100)
+                    p = apr_percent(min, max, 2)
+                    setBalance(p)
                     return
                 }
                 if (value === "lastTime") {
@@ -61,6 +75,9 @@ const Balance = (props) => {
             if (props.type === "count") {
                 Init(voom.methods.members(address).call(), "count")
             }
+            if (props.type === "APY") {
+                Init(voom.methods.dubbing().call(), "apy")
+            }
         }
     }, [voom, props, render, isConnected, address])
 
@@ -72,6 +89,7 @@ const Balance = (props) => {
                     <div className="global_child_container_data">
                         <div className="global_child_container_values">
                             <span role="img" className="global_child_icon">
+                                {props.type === "APY" && t("🚜")}
                                 {props.type === "amountDeposited" && t("💰")}
                                 {props.type === "amountGain" && t("🤑")}
                                 {props.type === "amountGainNetwork" && t("💵")}
@@ -82,6 +100,7 @@ const Balance = (props) => {
                             <div size="24" className="global_child_separator"></div>
                             <div className="global_child_main_flex">
                                 <div className="global_child_container_title">
+                                    {props.type === "APY" && t("APY")}
                                     {props.type === "amountDeposited" && t("USDT deposited")}
                                     {props.type === "amountGain" && t("My earnings")}
                                     {props.type === "amountGainNetwork" && t("My network earnings")}
@@ -90,9 +109,10 @@ const Balance = (props) => {
                                     {props.type === "count" && t("Direct users")}
                                 </div>
                                 <div className="global_child_container_value">
-                                    {props.type !== "count" && props.type !== "lastTime" && <>${nfu(balance)}</>}
+                                    {props.type !== "count" && props.type !== "lastTime" && props.type !== "APY" && <>${nfu(balance)}</>}
                                     {props.type === "count" && <>{parseInt(balance)}</>}
                                     {props.type === "lastTime" && <span className="value_last">{balance}</span>}
+                                    {props.type === "APY" && <>{nfu(balance)}%</>}
                                 </div>
                             </div>
                         </div>

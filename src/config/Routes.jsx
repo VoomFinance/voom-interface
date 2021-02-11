@@ -4,6 +4,7 @@ import LayoutApp from "../containers/Layouts/App"
 import Home from "../containers/Home"
 import Vault from "../containers/Vault"
 import Details from "../containers/Details"
+import Network from "../containers/Network"
 
 const createHistory = require("history").createBrowserHistory
 const history = createHistory()
@@ -14,6 +15,7 @@ const routes = {
       { path: "/", component: Home, exact: true },
       { path: "/vault", component: Vault, exact: true },
       { path: "/details", component: Details, exact: true },
+      { path: "/network", component: Network, exact: true },
     ],
   }
 }

@@ -215,24 +215,6 @@ const abi = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "_member",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_parent",
-        "type": "address"
-      }
-    ],
-    "name": "addMember",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "_mod",
         "type": "address"
       }
@@ -328,6 +310,20 @@ const abi = [
   {
     "inputs": [],
     "name": "daily",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "dubbing",
     "outputs": [
       {
         "internalType": "uint256",
@@ -784,11 +780,6 @@ const abi = [
       },
       {
         "internalType": "uint256",
-        "name": "amountPromise",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "amountGain",
         "type": "uint256"
       },
@@ -974,6 +965,19 @@ const abi = [
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "setRefPercent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "_position",
         "type": "uint256"
       },
@@ -1080,6 +1084,26 @@ const abi = [
       }
     ],
     "name": "pending",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "promiseVoom",
     "outputs": [
       {
         "internalType": "uint256",

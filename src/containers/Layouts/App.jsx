@@ -12,18 +12,22 @@ const Layout = (props) => {
     const voom = useSelector(store => store.web3.voom)
 
     useEffect(() => {
+        dispatch({ type: 'CHANGE_INNER_WIDTH', payload: window.innerWidth })
+        window.addEventListener("resize", () => {
+            dispatch({ type: 'CHANGE_INNER_WIDTH', payload: window.innerWidth })
+        })
         if (params.ref && params.ref !== null && params.ref !== undefined) {
             try {
                 voom.methods.members(params.ref).call().then((result) => {
                     if (result.isExist === true) {
                         dispatch({ type: 'CHANGE_SPONSOR', payload: params.ref })
-                        localStorage.setItem("sponsor", params.ref )
+                        localStorage.setItem("sponsor", params.ref)
                     } else {
                         try {
                             voom.methods.membersList(0).call().then((result) => {
                                 dispatch({ type: 'CHANGE_SPONSOR', payload: result })
-                                localStorage.setItem("sponsor", result )
-                            })                            
+                                localStorage.setItem("sponsor", result)
+                            })
                         } catch (error) {
                             dispatch({ type: 'CHANGE_SPONSOR', payload: null })
                             localStorage.removeItem("sponsor")
@@ -34,8 +38,8 @@ const Layout = (props) => {
                 try {
                     voom.methods.membersList(0).call().then((result) => {
                         dispatch({ type: 'CHANGE_SPONSOR', payload: result })
-                        localStorage.setItem("sponsor", result )
-                    })                     
+                        localStorage.setItem("sponsor", result)
+                    })
                 } catch (error) {
                     dispatch({ type: 'CHANGE_SPONSOR', payload: null })
                     localStorage.removeItem("sponsor")
@@ -48,13 +52,13 @@ const Layout = (props) => {
                     voom.methods.members(_sponsor).call().then((result) => {
                         if (result.isExist === true) {
                             dispatch({ type: 'CHANGE_SPONSOR', payload: _sponsor })
-                            localStorage.setItem("sponsor", _sponsor )
+                            localStorage.setItem("sponsor", _sponsor)
                         } else {
                             try {
                                 voom.methods.membersList(0).call().then((result) => {
                                     dispatch({ type: 'CHANGE_SPONSOR', payload: result })
-                                    localStorage.setItem("sponsor", result )
-                                })                            
+                                    localStorage.setItem("sponsor", result)
+                                })
                             } catch (error) {
                                 dispatch({ type: 'CHANGE_SPONSOR', payload: null })
                                 localStorage.removeItem("sponsor")
@@ -65,8 +69,8 @@ const Layout = (props) => {
                     try {
                         voom.methods.membersList(0).call().then((result) => {
                             dispatch({ type: 'CHANGE_SPONSOR', payload: result })
-                            localStorage.setItem("sponsor", result )
-                        })                     
+                            localStorage.setItem("sponsor", result)
+                        })
                     } catch (error) {
                         dispatch({ type: 'CHANGE_SPONSOR', payload: null })
                         localStorage.removeItem("sponsor")
@@ -76,8 +80,8 @@ const Layout = (props) => {
                 try {
                     voom.methods.membersList(0).call().then((result) => {
                         dispatch({ type: 'CHANGE_SPONSOR', payload: result })
-                        localStorage.setItem("sponsor", result )
-                    })                    
+                        localStorage.setItem("sponsor", result)
+                    })
                 } catch (error) {
                     dispatch({ type: 'CHANGE_SPONSOR', payload: null })
                     localStorage.removeItem("sponsor")

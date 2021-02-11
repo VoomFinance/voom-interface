@@ -5,19 +5,43 @@ import Claim from '../components/Claim'
 import Deposit from '../components/Deposit'
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { daily } from '../config/configs'
 
 const Vault = () => {
     const { t } = useTranslation()
     const voomContract = useSelector((store) => store.web3.voom);
     const [text, set_text] = useState('')
+    const [block, set_block] = useState(0)
+    const block_last = useSelector((store) => store.web3.block)
+    const [reload, set_reload] = useState(0);
 
     useEffect(() => {
-        const init = async() => {
+        if (block === 0 && block_last !== null) {
+            set_block(block_last)
+        } else {
+            if ((block_last - block) >= 3) {
+                set_reload(Math.random())
+                set_block(block_last)
+            }
+        }
+    }, [block_last, block])
+
+    useEffect(() => {
+        const apr_percent = (min, max, dec) => {
+            var precision = Math.pow(10, dec);
+            min = min * precision;
+            max = max * precision;
+            return Math.floor(Math.random() * (max - min + 1) + min) / precision;
+        }
+        const init = async () => {
             let p = 0
             try {
                 await voomContract.methods.daily().call().then(async (result) => {
-                    p = window.web3Read.utils.fromWei(result + '', 'ether')
-                })            
+                    p = parseFloat(window.web3Read.utils.fromWei(result + '', 'ether'))
+                    const min = p - (p * 5 / 100)
+                    const max = p + (p * 20 / 100)
+                    p = apr_percent(min, max, 2)
+                })
             } catch (error) {
                 p = 0
             }
@@ -26,7 +50,11 @@ const Vault = () => {
             set_text(_t)
         }
         init()
-    }, [voomContract, t])
+    }, [voomContract, t, reload])
+
+    const openDetail = () => {
+        window.open(daily)
+    }
 
     return (
         <div>
@@ -49,6 +77,9 @@ const Vault = () => {
                         </div>
                         <div className="col-12 mt-5 mb-5 container_vaults">
                             <h3 className="kKRWkn">💣 {text}</h3>
+                            <h3 className="kKRWkn comm_net" onClick={openDetail}>
+                                ℹ️ {t("Read more about calculating the daily percentage")}
+                            </h3>
                         </div>
                     </div>
                 </div>

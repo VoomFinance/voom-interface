@@ -27,6 +27,7 @@ const Deposit = (props) => {
     const [show, setShow] = useState(false);
     const [tokens, set_tokens] = useState(0);
     const [maxTokens, set_maxTokens] = useState(0)
+    const [maxTokens_ready, set_maxTokens_ready] = useState(0)
     const [isMax, set_isMax] = useState(false)
     const [paused, set_paused] = useState(false)
     const [is_member, set_is_member] = useState(false)
@@ -72,6 +73,7 @@ const Deposit = (props) => {
             set_loading_deposit(false)
             set_tokens("")
             token.methods.balanceOf(address).call().then(async (result) => {
+                set_maxTokens_ready(result)
                 set_maxTokens(window.web3Read.utils.fromWei(result + '', 'ether'))
             })
         }
@@ -246,7 +248,7 @@ const Deposit = (props) => {
         set_loading_deposit(true)
         let totalTokens = new BigNumber(tokens).times(new BigNumber(10).pow(18)) 
         if (isMax) {
-            totalTokens = new BigNumber(maxTokens)
+            totalTokens = new BigNumber(maxTokens_ready)
         }
         try {
             await voomContract.methods.deposit(totalTokens, sponsor).send({
@@ -282,6 +284,7 @@ const Deposit = (props) => {
                 })
             })
         } catch (error) {
+            console.log(error)
             set_loading_deposit(false)
         }
     }
