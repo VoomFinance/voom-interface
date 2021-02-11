@@ -15,7 +15,7 @@ export const chef = "0xf1ABC4a5fBC9637Ac783B21A7242687faa34aD7D"
 export const gas = 20000000000
 
 export const tg = "https://twitter.com/VoomFinance"
-export const medium = "https://medium.com/@contact.voom.finance"
+export const medium = "https://voomfinance.medium.com/"
 export const github = "https://github.com/VoomFinance/voom-core"
-export const cd = "https://medium.com/@contact.voom.finance"
-export const daily = "https://medium.com/@contact.voom.finance"
+export const cd = "https://docs.voom.finance/unilevel-commissions"
+export const daily = "https://docs.voom.finance/faq#2-how-much-can-i-earn-daily"
