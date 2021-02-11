@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from "react-i18next"
-import imgLogo from '../assets/images/logo_header.png'
+import imgLogo from '../assets/images/network.png'
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import Tree from '../components/Tree';

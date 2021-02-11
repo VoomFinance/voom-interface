@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from "react-i18next"
-import imgLogo from '../assets/images/logo_header.png'
+import imgLogo from '../assets/images/vault.png'
 import Claim from '../components/Claim'
 import Deposit from '../components/Deposit'
 import { useSelector } from "react-redux";
