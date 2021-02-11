@@ -27,6 +27,7 @@ const Header = (props) => {
                         <Nav.Link href="#/vault">{t("Vault")}</Nav.Link>
                         <Nav.Link href="#/network">{t("Network")}</Nav.Link>
                         <Nav.Link href="#/details">{t("Details")}</Nav.Link>
+                        <Nav.Link href="https://docs.voom.finance/" target="_blank">{t("Docs")}</Nav.Link>
                     </Nav>
                     <Nav className="container_btn_connected" >
                         <Connected />
