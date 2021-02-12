@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 import { useDispatch } from "react-redux"
 import { useSelector } from "react-redux"
-import { idNetworkMetamask, idNetworkBSC, rcp, multicallAddr, usdt, voom } from '../config/configs'
+import { rcp, multicallAddr, usdt, voom } from '../config/configs'
 import Web3 from "web3"
 import abiToken from '../assets/abi/Token'
 import abiVoom from '../assets/abi/Voom'
@@ -42,17 +42,12 @@ export const autoMetamask = async () => {
         await new Promise(async (resolve, reject) => {
             setTimeout(function () {
                 resolve()
-            }, 350)
+            }, 450)
         })
         if (window.ethereum && (await window.ethereum.isConnected()) === true) {
             try {
                 window.web3 = new Web3(window.ethereum)
-                let netId = window.web3.currentProvider.chainId
-                if (netId === idNetworkMetamask) {
-                    check = true
-                } else {
-                    window.web3 = null
-                }
+                check = true
             } catch (e) {
                 window.web3 = null
             }
@@ -67,17 +62,12 @@ export const autoBinanceSmartChain = async () => {
         await new Promise(async (resolve, reject) => {
             setTimeout(function () {
                 resolve()
-            }, 350)
+            }, 450)
         })
         if (window.BinanceChain && (await window.BinanceChain.isConnected()) === true) {
             try {
                 window.web3 = new Web3(window.BinanceChain)
-                let netId = window.web3.currentProvider.chainId
-                if (netId === idNetworkBSC) {
-                    check = true
-                } else {
-                    window.web3 = null
-                }
+                check = true
             } catch (e) {
                 window.web3 = null
             }
@@ -119,6 +109,7 @@ export const accountsChanged = (dispatch) => {
         window.ethereum.on('accountsChanged', (result) => {
             if (result.length > 0) {
                 dispatch({ type: 'CHANGE_ADDRESS', payload: result[0] })
+                localStorage.setItem(result[0], true);
             } else {
                 dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                 dispatch({ type: "CHANGE_METAMASK", payload: false })
@@ -128,6 +119,7 @@ export const accountsChanged = (dispatch) => {
         window.BinanceChain.on('accountsChanged', (result) => {
             if (result.length > 0) {
                 dispatch({ type: 'CHANGE_ADDRESS', payload: result[0] })
+                localStorage.setItem(result[0], true);
             } else {
                 dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                 dispatch({ type: "CHANGE_METAMASK", payload: false })
@@ -158,25 +150,30 @@ export const Web3Auto = () => {
             }
             const init = async () => {
                 await BlockLast(dispatch)
+                let statusWeb3 = false
                 if (await autoBinanceSmartChain() === true) {
                     dispatch({ type: 'CHANGE_NETWORK', payload: 'bsc' })
                     if (await checkAddress() === true) {
                         dispatch({ type: 'CHANGE_CONNECTED', payload: true })
                         Web3ContractsProvider(dispatch)
+                        statusWeb3 = true
                     } else {
                         dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                         dispatch({ type: "CHANGE_METAMASK", payload: false })
                     }
-                } else if (await autoMetamask() === true) {
+                } 
+                if (statusWeb3 === false && await autoMetamask() === true) {
                     dispatch({ type: 'CHANGE_NETWORK', payload: 'eth' })
                     if (await checkAddress() === true) {
                         dispatch({ type: 'CHANGE_CONNECTED', payload: true })
                         Web3ContractsProvider(dispatch)
+                        statusWeb3 = true
                     } else {
                         dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                         dispatch({ type: "CHANGE_METAMASK", payload: false })
                     }
-                } else {
+                } 
+                if(statusWeb3 === false){
                     dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                 }
             }

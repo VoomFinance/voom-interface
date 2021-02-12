@@ -42,6 +42,11 @@ const Connected = (props) => {
     if ((await autoBinanceSmartChain()) === true) {
       try {
         await window.BinanceChain.enable();
+
+
+
+
+        
         try {
           dispatch({ type: "CHANGE_NETWORK", payload: "eth" });
           if ((await checkAddress()) === true) {
@@ -75,32 +80,59 @@ const Connected = (props) => {
   const connectMetamask = async () => {
     if ((await autoMetamask()) === true) {
       try {
+        let mobile = false
+        const ua = navigator.userAgent
+        let method = 'wallet_requestPermissions'
+        if (ua.indexOf("Android") >= 0 || ua.indexOf("Aandroid") >= 0 || ua.indexOf("iPhone") >= 0 || ua.indexOf("iphone") >= 0) {
+          mobile = true
+          method = 'eth_requestAccounts'
+        }
         await window.ethereum.request({
-          method: "wallet_requestPermissions",
+          method: method,
           params: [
             {
               eth_accounts: {},
             },
           ],
-        });
-        try {
-          dispatch({ type: "CHANGE_NETWORK", payload: "eth" });
-          if ((await checkAddress()) === true) {
-            dispatch({ type: "CHANGE_CONNECTED", payload: true });
-            Web3ContractsProvider(dispatch);
-          } else {
-            dispatch({ type: "CHANGE_CONNECTED", payload: false });
-            dispatch({ type: "CHANGE_METAMASK", payload: false });
+        }).then(async (permissions) => {
+          let accountsPermission = true
+          if (!mobile) {
+            accountsPermission = permissions.find(
+              (permission) => permission.parentCapability === 'eth_accounts'
+            )
           }
-          setShow(false)
-        } catch (error) {
-          addToast(t("An error occurred while viewing the wallet"), {
-            appearance: "error",
-            autoDismiss: true,
+          if (accountsPermission) {
+            try {
+              dispatch({ type: "CHANGE_NETWORK", payload: "eth" });
+              if ((await checkAddress()) === true) {
+                dispatch({ type: "CHANGE_CONNECTED", payload: true });
+                Web3ContractsProvider(dispatch);
+              } else {
+                dispatch({ type: "CHANGE_CONNECTED", payload: false });
+                dispatch({ type: "CHANGE_METAMASK", payload: false });
+              }
+              setShow(false)
+            } catch (error) {
+              addToast(t("An error occurred while viewing the wallet"), {
+                appearance: "error",
+                autoDismiss: true,
+              });
+            }
+          } else {
+            addToast(t("An error occurred while enabling the account"), {
+              appearance: "error",
+              autoDismiss: true,
+            });
+          }
+        })
+          .catch((error) => {
+            addToast(error.message, {
+              appearance: "error",
+              autoDismiss: true,
+            });
           });
-        }
       } catch (error) {
-        addToast(t("An error occurred while enabling the account"), {
+        addToast(error.message, {
           appearance: "error",
           autoDismiss: true,
         });
