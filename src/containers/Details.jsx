@@ -20,6 +20,7 @@ const Details = () => {
                         </div>
                         <div className="col-12">
                             <Balance type="APY" />
+                            <Balance type="global_earnings" />
                             <Balance type="amountDeposited" />
                             <Balance type="amountGain" />
                             <Balance type="amountGainNetwork" />

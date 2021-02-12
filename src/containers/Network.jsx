@@ -16,7 +16,7 @@ const Network = () => {
     const innerWidth = useSelector((store) => store.theme.innerWidth);
     const [data, setData] = useState({})
     const { addToast } = useToasts();
-    const url = window.location.origin + "/#/?r=";
+    const url = window.location.origin + "/#/?ref=";
 
     useEffect(() => {
         const init = async () => {
@@ -32,10 +32,11 @@ const Network = () => {
                         amountGain: 0,
                         amountGainNetwork: 0,
                         amountBonus: 0,
-                        lastTime: 0
+                        lastTime: 0,
                     },
                     title: address,
-                    innerWidth: innerWidth
+                    innerWidth: innerWidth,
+                    status: false
                 }
                 await voom.methods.vooms(address).call().then(async (result) => {
                     treeData.amountUser = result.amountUser
@@ -45,6 +46,7 @@ const Network = () => {
                     treeData.amountGainNetwork = result.amountGainNetwork
                     treeData.amountBonus = result.amountBonus
                     treeData.lastTime = result.lastTime
+                    treeData.status = result.status
                 })
                 await voom.methods.members(address).call().then(async (result) => {
                     if (result.referredUsers > 0) {
@@ -64,9 +66,11 @@ const Network = () => {
                                                 amountGainNetwork: r.amountGainNetwork,
                                                 amountBonus: r.amountBonus,
                                                 lastTime: r.lastTime,
+                                                status: r.status,
                                             },
                                             title: r.voom,
-                                            innerWidth: innerWidth
+                                            innerWidth: innerWidth,
+                                            status: r.status,
                                         })
                                     }
                                 })
@@ -75,6 +79,8 @@ const Network = () => {
                     }
                 })
                 setData(treeData)
+            } else {
+                setData({})
             }
         }
         init()
@@ -135,7 +141,7 @@ const Network = () => {
                             </div>
                         </div>
                         <div className="col-12 container_vaults">
-                            <div className="tree container_vaults">
+                            <div className="tree " align="center">
                                 <Tree json={data} />
                             </div>
                         </div>

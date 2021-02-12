@@ -856,6 +856,11 @@ const abi = [
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
+        "name": "global_earnings",
+        "type": "uint256"
+      },
+      {
         "internalType": "bool",
         "name": "status",
         "type": "bool"
@@ -1092,6 +1097,19 @@ const abi = [
       }
     ],
     "name": "setDateWithdraw",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "finishVoom",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

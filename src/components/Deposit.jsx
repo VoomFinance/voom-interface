@@ -65,6 +65,9 @@ const Deposit = (props) => {
             voomContract.methods.vooms(address).call().then(async (result) => {
                 set_balance(new BigNumber(result.amountDeposited).div(new BigNumber(10).pow(18)))
             })
+        } else {
+            set_balance(0)
+            set_aprovedToken(false)
         }
     }, [isConnected, address, reinvest, voomContract])
 
@@ -251,7 +254,7 @@ const Deposit = (props) => {
             totalTokens = new BigNumber(maxTokens_ready)
         }
         try {
-            await voomContract.methods.deposit(totalTokens, sponsor).send({
+            await voomContract.methods.deposit(totalTokens.toString(), sponsor).send({
                 from: address,
                 value: 0,
                 gas: 0,

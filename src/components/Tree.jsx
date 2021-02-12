@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { withRouter } from "react-router-dom";
 import imgBinary from '../assets/images/binary.png'
+import imgBinaryOff from '../assets/images/binary_off.png'
 import { Modal } from 'react-bootstrap';
 import { nfu } from '../utils/web3'
 import moment from 'moment'
@@ -81,9 +82,11 @@ const Tree = (props) => {
                                             amountGainNetwork: r.amountGainNetwork,
                                             amountBonus: r.amountBonus,
                                             lastTime: r.lastTime,
+                                            status: r.status,
                                         },
                                         title: r.voom,
-                                        innerWidth: innerWidth
+                                        innerWidth: innerWidth,
+                                        status: r.status,
                                     })
                                 }
                             })
@@ -142,7 +145,8 @@ const Tree = (props) => {
                                 <div className="node">
                                     <div className="person">
                                         <div className="avat click" id={treeData.address} variant="outline-success" onClick={() => getChildren(treeData)}>
-                                            <img src={imgBinary} alt="" />
+                                            {treeData.status === false && <img src={imgBinaryOff} alt="" />}
+                                            {treeData.status === true && <img src={imgBinary} alt="" />}
                                         </div>
                                         <div className="id click addr_net" onClick={() => openDetails(treeData)}> {treeData.address.substr(0, 6)}...{treeData.address.substr(-4)} </div>
                                     </div>

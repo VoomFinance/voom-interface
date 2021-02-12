@@ -134,7 +134,7 @@ const Connected = (props) => {
       )}
       {isConnected !== true && (
         <>
-          <Button variant="warning" className="btn_connected" onClick={openModal}>{t("Connect Wallet")}</Button>
+          <Button variant="warning" className="btn_connected btn_connect_wallet" onClick={openModal}>{t("Connect Wallet")}</Button>
         </>
       )}
       <Modal

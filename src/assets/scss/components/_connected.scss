@@ -71,6 +71,12 @@
   align-items: center;
 }
 
+@media only screen and (max-width: 1195px) and (min-width: 992px) {
+  .btn_connect_wallet {
+    font-size: 0.63em;
+  }
+}
+
 @media (max-width: 576px) {
   .connected-metamask {
     width: 20%;

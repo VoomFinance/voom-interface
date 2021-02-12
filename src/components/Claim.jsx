@@ -48,6 +48,8 @@ const Claim = (props) => {
             voomContract.methods.isMember(address).call().then(async (result) => {
                 set_is_member(result)
             })
+        } else {
+            set_balance(0)
         }
     }, [isConnected, address, token, reload, voomContract])
 

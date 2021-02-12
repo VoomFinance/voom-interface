@@ -1,7 +1,7 @@
 import React from 'react'
 import { Nav } from 'react-bootstrap';
 import { useTranslation } from "react-i18next";
-import { medium, github, explorerAddress, voom, usdt } from '../config/configs'
+import { medium, github, explorerAddress, voom, usdt, metamask } from '../config/configs'
 import { useSelector } from "react-redux";
 import { useToasts } from "react-toast-notifications";
 
@@ -89,7 +89,7 @@ const Footer = () => {
                         <Nav.Link href={medium} target="_blank">Medium</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link href="https://academy.binance.com/en/articles/connecting-metamask-to-binance-smart-chain" target="_blank">{t("Connect Metamask with Binance")}</Nav.Link>
+                        <Nav.Link href={metamask} target="_blank">{t("Connect Metamask with Binance")}</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link onClick={(e) => change(e)}>{t("Change language")}</Nav.Link>

@@ -69,12 +69,19 @@ const Balance = (props) => {
             if (props.type === "amountBonus") {
                 Init(voom.methods.vooms(address).call(), "amountBonus")
             }
-            if (props.type === "lastTime") {
-                Init(voom.methods.vooms(address).call(), "lastTime")
+            if (props.type === "amountBonus") {
+                Init(voom.methods.vooms(address).call(), "amountBonus")
+            }
+            if (props.type === "global_earnings") {
+                Init(voom.methods.vooms(address).call(), "global_earnings")
             }
             if (props.type === "count") {
                 Init(voom.methods.members(address).call(), "count")
             }
+        } else {
+            setBalance(0)
+        }
+        if (voom !== null) {
             if (props.type === "APY") {
                 Init(voom.methods.dubbing().call(), "apy")
             }
@@ -90,6 +97,7 @@ const Balance = (props) => {
                         <div className="global_child_container_values">
                             <span role="img" className="global_child_icon">
                                 {props.type === "APY" && t("🚜")}
+                                {props.type === "global_earnings" && t("💸")}
                                 {props.type === "amountDeposited" && t("💰")}
                                 {props.type === "amountGain" && t("🤑")}
                                 {props.type === "amountGainNetwork" && t("💵")}
@@ -101,6 +109,7 @@ const Balance = (props) => {
                             <div className="global_child_main_flex">
                                 <div className="global_child_container_title">
                                     {props.type === "APY" && t("APY")}
+                                    {props.type === "global_earnings" && t("My global earnings")}
                                     {props.type === "amountDeposited" && t("USDT deposited")}
                                     {props.type === "amountGain" && t("My earnings")}
                                     {props.type === "amountGainNetwork" && t("My network earnings")}
