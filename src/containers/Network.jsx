@@ -32,6 +32,7 @@ const Network = () => {
                         amountGain: 0,
                         amountGainNetwork: 0,
                         amountBonus: 0,
+                        global_earnings: 0,
                         lastTime: 0,
                     },
                     title: address,
@@ -46,6 +47,7 @@ const Network = () => {
                     treeData.amountGainNetwork = result.amountGainNetwork
                     treeData.amountBonus = result.amountBonus
                     treeData.lastTime = result.lastTime
+                    treeData.global_earnings = result.global_earnings
                     treeData.status = result.status
                 })
                 await voom.methods.members(address).call().then(async (result) => {
@@ -66,6 +68,7 @@ const Network = () => {
                                                 amountGainNetwork: r.amountGainNetwork,
                                                 amountBonus: r.amountBonus,
                                                 lastTime: r.lastTime,
+                                                global_earnings: r.global_earnings,
                                                 status: r.status,
                                             },
                                             title: r.voom,

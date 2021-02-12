@@ -82,6 +82,7 @@ const Tree = (props) => {
                                             amountGainNetwork: r.amountGainNetwork,
                                             amountBonus: r.amountBonus,
                                             lastTime: r.lastTime,
+                                            global_earnings: r.global_earnings,
                                             status: r.status,
                                         },
                                         title: r.voom,
@@ -125,6 +126,7 @@ const Tree = (props) => {
                                     <p className="connected_title">{t("Account detail")}</p>
                                     <p className="connected_subtitle">{addr}</p>
                                     <p className="connected_subtitle">💰 {t("USDT deposited")}: ${weiToEther(data.amountDeposited)}</p>
+                                    <p className="connected_subtitle">💸 {t("Global earnings")}: ${weiToEther(data.global_earnings)}</p>
                                     <p className="connected_subtitle">🤑 {t("Earnings")}: ${weiToEther(data.amountGain)}</p>
                                     <p className="connected_subtitle">💵 {t("Network earnings")}: ${weiToEther(data.amountGainNetwork)}</p>
                                     <p className="connected_subtitle">💲 {t("Referral bonuses")}: ${weiToEther(data.amountBonus)}</p>
