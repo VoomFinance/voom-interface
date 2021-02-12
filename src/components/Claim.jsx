@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useToasts } from "react-toast-notifications";
 import { useTranslation } from "react-i18next";
 import { withRouter } from "react-router-dom";
-import { nf } from '../utils/web3'
+import { nf, getRevertReason } from '../utils/web3'
 import { gas, chef } from '../config/configs'
 import BigNumber from 'bignumber.js'
 import { useDispatch } from "react-redux"
@@ -24,6 +24,7 @@ const Claim = (props) => {
     const block_last = useSelector((store) => store.web3.block)
     const [paused, set_paused] = useState(false)
     const [is_member, set_is_member] = useState(false)
+    const [hash, set_hash] = useState(null)
     const dispatch = useDispatch()
     
     useEffect(() => {
@@ -69,6 +70,7 @@ const Claim = (props) => {
             return
         }
         set_loading_claim(true)
+        set_hash(null)
         try {
             await voomContract.methods.claim().send({
                 from: address,
@@ -76,6 +78,7 @@ const Claim = (props) => {
                 gas: 0,
                 gasPrice: gas
             }).on("transactionHash", async h => {
+                set_hash(h)
                 addToast(t('Transaction waiting for confirmation.'), {
                     appearance: 'info',
                     autoDismiss: true,
@@ -96,7 +99,11 @@ const Claim = (props) => {
                 }
             }).on("error", async (error) => {
                 set_loading_claim(false)
-                addToast(error.message, {
+                let msg = t('An error occurred, try again!')
+                if(hash !== null){
+                    msg = await getRevertReason(hash)
+                }
+                addToast(msg, {
                     appearance: 'error',
                     autoDismiss: true,
                 })
@@ -129,6 +136,7 @@ const Claim = (props) => {
             return
         }        
         set_loading_reinvest(true)
+        set_hash(null)
         try {
             await voomContract.methods.reinvest().send({
                 from: address,
@@ -136,6 +144,7 @@ const Claim = (props) => {
                 gas: 0,
                 gasPrice: gas
             }).on("transactionHash", async h => {
+                set_hash(h)
                 addToast(t('Transaction waiting for confirmation.'), {
                     appearance: 'info',
                     autoDismiss: true,
@@ -157,7 +166,11 @@ const Claim = (props) => {
                 }
             }).on("error", async (error) => {
                 set_loading_reinvest(false)
-                addToast(error.message, {
+                let msg = t('An error occurred, try again!')
+                if(hash !== null){
+                    msg = await getRevertReason(hash)
+                }
+                addToast(msg, {
                     appearance: 'error',
                     autoDismiss: true,
                 })

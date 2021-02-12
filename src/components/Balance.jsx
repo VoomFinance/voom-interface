@@ -3,7 +3,7 @@ import { useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { withRouter } from "react-router-dom"
-import { nfu } from '../utils/web3'
+import { nfu, nf } from '../utils/web3'
 import moment from 'moment'
 
 const Balance = (props) => {
@@ -78,6 +78,9 @@ const Balance = (props) => {
             if (props.type === "count") {
                 Init(voom.methods.members(address).call(), "count")
             }
+            if (props.type === "lastTime") {
+                Init(voom.methods.vooms(address).call(), "lastTime")
+            }
         } else {
             setBalance(0)
         }
@@ -118,7 +121,7 @@ const Balance = (props) => {
                                     {props.type === "count" && t("Direct users")}
                                 </div>
                                 <div className="global_child_container_value">
-                                    {props.type !== "count" && props.type !== "lastTime" && props.type !== "APY" && <>${nfu(balance)}</>}
+                                    {props.type !== "count" && props.type !== "lastTime" && props.type !== "APY" && <>${nf(balance)}</>}
                                     {props.type === "count" && <>{parseInt(balance)}</>}
                                     {props.type === "lastTime" && <span className="value_last">{balance}</span>}
                                     {props.type === "APY" && <>{nfu(balance)}%</>}

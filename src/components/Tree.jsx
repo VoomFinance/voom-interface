@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import imgBinary from '../assets/images/binary.png'
 import imgBinaryOff from '../assets/images/binary_off.png'
 import { Modal } from 'react-bootstrap';
-import { nfu } from '../utils/web3'
+import { nf } from '../utils/web3'
 import moment from 'moment'
 
 const Tree = (props) => {
@@ -102,7 +102,7 @@ const Tree = (props) => {
 
     const weiToEther = (r) => {
         try {
-            return nfu(window.web3Read.utils.fromWei(r + '', 'ether'))
+            return nf(window.web3Read.utils.fromWei(r + '', 'ether'))
         } catch (error) {
             return 0
         }

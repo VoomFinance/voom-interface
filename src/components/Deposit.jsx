@@ -5,8 +5,8 @@ import { useToasts } from "react-toast-notifications";
 import { useTranslation } from "react-i18next";
 import { withRouter } from "react-router-dom";
 import { ethers } from 'ethers'
-import { nf } from '../utils/web3'
-import { voom, gas, chef } from '../config/configs'
+import { nf, getRevertReason } from '../utils/web3'
+import { voom, gas } from '../config/configs'
 import {Modal} from 'react-bootstrap';
 import BigNumber from 'bignumber.js'
 
@@ -32,22 +32,23 @@ const Deposit = (props) => {
     const [paused, set_paused] = useState(false)
     const [is_member, set_is_member] = useState(false)
     const reinvest = useSelector((store) => store.web3.reinvest)
+    const [hash, set_hash] = useState(null)
 
     useEffect(() => {
         if (isConnected && address !== null && token !== null) {
             window.token = token
             window.address = address
             window.voom = voom
-            token.methods.allowance(address, chef).call().then(async (result) => {
-                if (parseFloat(result) > 1000000000) {
+            //token.methods.allowance(address, chef).call().then(async (result) => {
+            //    if (parseFloat(result) > 1000000000) {
                     token.methods.allowance(address, voom).call().then(async (result) => {
                         if (parseFloat(result) > 1000000000) {
                             set_aprovedToken(true)
                             set_loading_aproved(false)
                         }
                     })
-                }
-            })
+            //    }
+            //})
             voomContract.methods.vooms(address).call().then(async (result) => {
                 set_balance(new BigNumber(result.amountDeposited).div(new BigNumber(10).pow(18)))
             })
@@ -91,6 +92,7 @@ const Deposit = (props) => {
             return
         }
         set_loading_aproved(true)
+        set_hash(null)
         try {
             await token.methods.approve(addr, ethers.constants.MaxUint256).send({
                 from: address,
@@ -98,6 +100,7 @@ const Deposit = (props) => {
                 gas: 0,
                 gasPrice: gas
             }).on("transactionHash", async h => {
+                set_hash(h)
                 addToast(t('Transaction waiting for confirmation.'), {
                     appearance: 'info',
                     autoDismiss: true,
@@ -130,7 +133,11 @@ const Deposit = (props) => {
                 }
             }).on("error", async (error) => {
                 set_loading_aproved(false)
-                addToast(error.message, {
+                let msg = t('An error occurred, try again!')
+                if(hash !== null){
+                    msg = await getRevertReason(hash)
+                }
+                addToast(msg, {
                     appearance: 'error',
                     autoDismiss: true,
                 })
@@ -163,6 +170,7 @@ const Deposit = (props) => {
             return
         }
         set_loading_withdral(true)
+        set_hash(null)
         try {
             let statusWithdraw = false
             await voomContract.methods.vooms(address).call().then(async (result) => {
@@ -197,6 +205,7 @@ const Deposit = (props) => {
                         gas: 0,
                         gasPrice: gas
                     }).on("transactionHash", async h => {
+                        set_hash(h)
                         addToast(t('Transaction waiting for confirmation.'), {
                             appearance: 'info',
                             autoDismiss: true,
@@ -217,10 +226,14 @@ const Deposit = (props) => {
                         }
                     }).on("error", async (error) => {
                         set_loading_withdral(false)
-                        addToast(error.message, {
+                        let msg = t('An error occurred, try again!')
+                        if(hash !== null){
+                            msg = await getRevertReason(hash)
+                        }
+                        addToast(msg, {
                             appearance: 'error',
                             autoDismiss: true,
-                        })
+                        })                        
                     })
                 } catch (error) {
                     set_loading_withdral(false)
@@ -249,17 +262,21 @@ const Deposit = (props) => {
             return
         }        
         set_loading_deposit(true)
-        let totalTokens = new BigNumber(tokens).times(new BigNumber(10).pow(18)) 
+        set_hash(null)
+        //let totalTokens = new BigNumber(tokens).times(new BigNumber(10).pow(18)) 
+        let totalTokens = window.web3Read.utils.toWei(tokens + '', 'ether')
         if (isMax) {
-            totalTokens = new BigNumber(maxTokens_ready)
+            totalTokens = maxTokens_ready
         }
+        console.log(totalTokens)
         try {
-            await voomContract.methods.deposit(totalTokens.toString(), sponsor).send({
+            await voomContract.methods.deposit(totalTokens, sponsor).send({
                 from: address,
                 value: 0,
                 gas: 0,
                 gasPrice: gas
             }).on("transactionHash", async h => {
+                set_hash(h)
                 addToast(t('Transaction waiting for confirmation.'), {
                     appearance: 'info',
                     autoDismiss: true,
@@ -281,7 +298,11 @@ const Deposit = (props) => {
                 }
             }).on("error", async (error) => {
                 set_loading_deposit(false)
-                addToast(error.message, {
+                let msg = t('An error occurred, try again!')
+                if(hash !== null){
+                    msg = await getRevertReason(hash)
+                }
+                addToast(msg, {
                     appearance: 'error',
                     autoDismiss: true,
                 })

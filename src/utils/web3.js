@@ -10,6 +10,24 @@ import abiMulticall from '../assets/abi/Multicall'
 import BigNumber from 'bignumber.js'
 import { Interface } from '@ethersproject/abi'
 
+
+export const getRevertReason = async (txHash) => {
+    try {
+        const tx = await window.web3.eth.getTransaction(txHash)
+        var result = await window.web3.eth.call(tx, tx.blockNumber)
+        result = result.startsWith('0x') ? result : `0x${result}`
+        if (result && result.substr(138)) {
+            const reason = window.web3.utils.toAscii(result.substr(138))
+            return reason
+        } else {
+            return "Cannot get reason - No return value"
+        }
+    } catch (error) {
+        return "Cannot get reason - No return value"
+    }
+}
+
+
 export const Web3ContractsProvider = (dispatch) => {
     dispatch({ type: 'CHANGE_WEB3', payload: true })
     dispatch({ type: 'INTERFACE_TOKEN', payload: (new window.web3.eth.Contract(abiToken, usdt)) })
@@ -19,16 +37,16 @@ export const Web3ContractsProvider = (dispatch) => {
 export const Web3Init = () => {
     const dispatch = useDispatch()
     useEffect(() => {
-        const init = async() => {
+        const init = async () => {
             try {
                 window.web3Read = new Web3(rcp)
                 if (window.web3Read.currentProvider.host === rcp) {
                     dispatch({ type: 'CHANGE_WEB3', payload: true })
                     dispatch({ type: 'INTERFACE_TOKEN', payload: (new window.web3Read.eth.Contract(abiToken, usdt)) })
                     dispatch({ type: 'INTERFACE_VOOM', payload: (new window.web3Read.eth.Contract(abiVoom, voom)) })
-                }                
+                }
             } catch (error) {
-                
+
             }
         }
         init()
@@ -151,17 +169,6 @@ export const Web3Auto = () => {
             const init = async () => {
                 await BlockLast(dispatch)
                 let statusWeb3 = false
-                if (await autoBinanceSmartChain() === true) {
-                    dispatch({ type: 'CHANGE_NETWORK', payload: 'bsc' })
-                    if (await checkAddress() === true) {
-                        dispatch({ type: 'CHANGE_CONNECTED', payload: true })
-                        Web3ContractsProvider(dispatch)
-                        statusWeb3 = true
-                    } else {
-                        dispatch({ type: 'CHANGE_CONNECTED', payload: false })
-                        dispatch({ type: "CHANGE_METAMASK", payload: false })
-                    }
-                } 
                 if (statusWeb3 === false && await autoMetamask() === true) {
                     dispatch({ type: 'CHANGE_NETWORK', payload: 'eth' })
                     if (await checkAddress() === true) {
@@ -172,8 +179,19 @@ export const Web3Auto = () => {
                         dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                         dispatch({ type: "CHANGE_METAMASK", payload: false })
                     }
-                } 
-                if(statusWeb3 === false){
+                }
+                if (statusWeb3 === false && await autoBinanceSmartChain() === true) {
+                    dispatch({ type: 'CHANGE_NETWORK', payload: 'bsc' })
+                    if (await checkAddress() === true) {
+                        dispatch({ type: 'CHANGE_CONNECTED', payload: true })
+                        Web3ContractsProvider(dispatch)
+                        statusWeb3 = true
+                    } else {
+                        dispatch({ type: 'CHANGE_CONNECTED', payload: false })
+                        dispatch({ type: "CHANGE_METAMASK", payload: false })
+                    }
+                }
+                if (statusWeb3 === false) {
                     dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                 }
             }
@@ -190,7 +208,7 @@ export const nf = (n) => {
     if (s.indexOf('.') === -1) s += '.';
     while (s.length < s.indexOf('.') + 5) s += '0';
     let e = s.split(".")
-    if(e.length > 1){
+    if (e.length > 1) {
         let p = (new BigNumber(e[0] * 1)).toNumber().toLocaleString('en-US')
         s = p + '.' + e[1]
     }
@@ -203,7 +221,7 @@ export const nfu = (n) => {
     if (s.indexOf('.') === -1) s += '.';
     while (s.length < s.indexOf('.') + 3) s += '0';
     let e = s.split(".")
-    if(e.length > 1){
+    if (e.length > 1) {
         let p = (new BigNumber(e[0] * 1)).toNumber().toLocaleString('en-US')
         s = p + '.' + e[1]
     }
@@ -216,5 +234,5 @@ export const multicall = async (web3, abi, calls) => {
     const calldata = calls.map((call) => [call.address.toLowerCase(), itf.encodeFunctionData(call.name, call.params)])
     const { returnData } = await multi.methods.aggregate(calldata).call()
     const res = returnData.map((call, i) => itf.decodeFunctionResult(calls[i].name, call))
-    return res    
+    return res
 }
