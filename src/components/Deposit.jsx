@@ -325,7 +325,7 @@ const Deposit = (props) => {
                                 <div className="idGrgN">{t("USDT Balance")}</div>
                             </div>
                             <div className="iftTHE">
-                                {aprovedToken === false && loading_aproved === false && <button color="#664200" size="56" className="ieRJEt" onClick={() => Approve(chef, 0)}>{t("Approve Token")}</button>}
+                                {aprovedToken === false && loading_aproved === false && <button color="#664200" size="56" className="ieRJEt" onClick={() => Approve(voom, 1)}>{t("Approve Token")}</button>}
                                 {aprovedToken === false && loading_aproved === true && <button color="#664200" size="56" className="ieRJEt disabled_btn">{t("loading...")}</button>}
                                 {aprovedToken === true && loading_withdral === false && <button color="#664200" size="56" className="ieRJEt" onClick={Withdraw}>{t("Withdraw")}</button>}
                                 {aprovedToken === true && loading_withdral === true && <button color="#664200" size="56" className="ieRJEt disabled_btn">{t("loading...")}</button>}
