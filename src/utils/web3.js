@@ -180,7 +180,7 @@ export const Web3Auto = () => {
                         dispatch({ type: "CHANGE_METAMASK", payload: false })
                     }
                 }
-                if (statusWeb3 === false && await autoBinanceSmartChain() === true) {
+                /*if (statusWeb3 === false && await autoBinanceSmartChain() === true) {
                     dispatch({ type: 'CHANGE_NETWORK', payload: 'bsc' })
                     if (await checkAddress() === true) {
                         dispatch({ type: 'CHANGE_CONNECTED', payload: true })
@@ -190,7 +190,7 @@ export const Web3Auto = () => {
                         dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                         dispatch({ type: "CHANGE_METAMASK", payload: false })
                     }
-                }
+                }*/
                 if (statusWeb3 === false) {
                     dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                 }
