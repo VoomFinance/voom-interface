@@ -2,6 +2,7 @@ import React from "react";
 import imgMetamask from "../../assets/images/metamask.png";
 import imgBsc from "../../assets/images/bsc.png";
 import imgTrust from "../../assets/images/trust.png";
+import imgWC from "../../assets/images/wc.png";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal } from 'react-bootstrap';
 import { useState } from "react";
@@ -16,12 +17,15 @@ import {
 import { useToasts } from "react-toast-notifications";
 import { useTranslation } from "react-i18next";
 import { withRouter } from "react-router-dom";
+import WalletConnect from "@walletconnect/client";
+import QRCodeModal from "@walletconnect/qrcode-modal";
 
 const Connected = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const isConnected = useSelector((store) => store.web3.isConnected);
   const address = useSelector((store) => store.web3.address);
+  const walletconnect = useSelector((store) => store.web3.walletconnect);
   const { addToast } = useToasts();
   const [show, setShow] = useState(false);
 
@@ -38,15 +42,50 @@ const Connected = (props) => {
     return null;
   };
 
+  const connectWalletConnect = async() => {
+    let connector = new WalletConnect({
+      bridge: "https://bridge.walletconnect.org",
+      qrcodeModal: QRCodeModal
+    })
+    if (!connector.connected) {
+      connector.createSession()
+    } else {
+      connector.killSession()
+      localStorage.removeItem("WALLECTCONNECT")
+      connector = new WalletConnect({
+        bridge: "https://bridge.walletconnect.org",
+        qrcodeModal: QRCodeModal
+      })      
+      if (!connector.connected) {
+        connector.createSession()
+      }
+    }
+    connector.on("connect", (error, payload) => {
+      if (error) {
+        throw error;
+      }
+      const { accounts, chainId } = payload.params[0]     
+      if((chainId === 997 || chainId === 56 || chainId === '56' || chainId === '0x38' || chainId === 0x38) && accounts.length > 0){
+        localStorage.setItem("WALLECTCONNECT", accounts[0]);
+        dispatch({ type: "CHANGE_ADDRESS", payload: accounts[0] });
+        dispatch({ type: "CHANGE_CONNECTED", payload: true });
+        dispatch({ type: "CHANGE_METAMASK", payload: true });
+        dispatch({ type: "CHANGE_WALLECTCONNECT", payload: connector });
+        setShow(false)
+      }
+    });
+    connector.on("disconnect", async(error, payload) => {
+      if (error) {
+        throw error;
+      }
+      await disconnected()
+    });    
+  }
+
   const connectBSC = async () => {
     if ((await autoBinanceSmartChain()) === true) {
       try {
         await window.BinanceChain.enable();
-
-
-
-
-        
         try {
           dispatch({ type: "CHANGE_NETWORK", payload: "eth" });
           if ((await checkAddress()) === true) {
@@ -155,6 +194,19 @@ const Connected = (props) => {
     dispatch({ type: "CHANGE_CONNECTED", payload: false });
     dispatch({ type: "CHANGE_METAMASK", payload: false });
     dispatch({ type: "CHANGE_ADDRESS", payload: null });
+    dispatch({ type: "CHANGE_WALLECTCONNECT", payload: null });
+    try {
+      localStorage.removeItem("WALLECTCONNECT")
+      const connector = new WalletConnect({
+        bridge: "https://bridge.walletconnect.org",
+        qrcodeModal: QRCodeModal
+      })
+      if (connector.connected) {
+        walletconnect.killSession()
+      }     
+    } catch (error) {
+      
+    }
   };
 
   return (
@@ -221,6 +273,22 @@ const Connected = (props) => {
                     <div className="connected-title">Trust Wallet</div>
                     <div className="connected-subtitle">
                       {t("Connect to your Trust Wallet")}
+                    </div>
+                  </div>
+                </div>
+                <hr className="connected-hr" />
+                <div className="row connected-hover" onClick={connectWalletConnect}>
+                  <div className="col-xl-2 col-md-2 col-sm-2 col-12 connected-center">
+                    <img
+                      src={imgWC}
+                      alt=""
+                      className="connected-metamask"
+                    />
+                  </div>
+                  <div className="col-xl-10 col-md-10 col-sm-10 col-12 connected-data connected-center">
+                    <div className="connected-title">Wallet Connect</div>
+                    <div className="connected-subtitle">
+                      {t("Connect to your Wallet Connect")}
                     </div>
                   </div>
                 </div>

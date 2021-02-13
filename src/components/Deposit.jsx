@@ -6,9 +6,11 @@ import { useTranslation } from "react-i18next";
 import { withRouter } from "react-router-dom";
 import { ethers } from 'ethers'
 import { nf, getRevertReason } from '../utils/web3'
-import { voom, gas } from '../config/configs'
-import {Modal} from 'react-bootstrap';
+import { voom, gas, usdt } from '../config/configs'
+import { Modal } from 'react-bootstrap';
 import BigNumber from 'bignumber.js'
+import abiToken from '../assets/abi/Token'
+import abiVoom from '../assets/abi/Voom'
 
 const Deposit = (props) => {
     const { t } = useTranslation();
@@ -33,6 +35,7 @@ const Deposit = (props) => {
     const [is_member, set_is_member] = useState(false)
     const reinvest = useSelector((store) => store.web3.reinvest)
     const [hash, set_hash] = useState(null)
+    const walletconnect = useSelector((store) => store.web3.walletconnect);
 
     useEffect(() => {
         if (isConnected && address !== null && token !== null) {
@@ -41,12 +44,12 @@ const Deposit = (props) => {
             window.voom = voom
             //token.methods.allowance(address, chef).call().then(async (result) => {
             //    if (parseFloat(result) > 1000000000) {
-                    token.methods.allowance(address, voom).call().then(async (result) => {
-                        if (parseFloat(result) > 1000000000) {
-                            set_aprovedToken(true)
-                            set_loading_aproved(false)
-                        }
-                    })
+            token.methods.allowance(address, voom).call().then(async (result) => {
+                if (parseFloat(result) > 1000000000) {
+                    set_aprovedToken(true)
+                    set_loading_aproved(false)
+                }
+            })
             //    }
             //})
             voomContract.methods.vooms(address).call().then(async (result) => {
@@ -93,57 +96,84 @@ const Deposit = (props) => {
         }
         set_loading_aproved(true)
         set_hash(null)
-        try {
-            await token.methods.approve(addr, ethers.constants.MaxUint256).send({
-                from: address,
-                value: 0,
-                gas: 0,
-                gasPrice: gas
-            }).on("transactionHash", async h => {
-                set_hash(h)
-                addToast(t('Transaction waiting for confirmation.'), {
-                    appearance: 'info',
-                    autoDismiss: true,
-                })
-            }).on('receipt', async (receipt) => {
-                if(type === 0){
+        if (walletconnect === null) {
+            try {
+                await token.methods.approve(addr, ethers.constants.MaxUint256).send({
+                    from: address,
+                    value: 0,
+                    gas: 0,
+                    gasPrice: gas
+                }).on("transactionHash", async h => {
+                    set_hash(h)
+                    addToast(t('Transaction waiting for confirmation.'), {
+                        appearance: 'info',
+                        autoDismiss: true,
+                    })
+                }).on('receipt', async (receipt) => {
+                    if (type === 0) {
+                        if (receipt.status) {
+                            Approve(voom, 1)
+                            return
+                        } else {
+                            set_loading_aproved(false)
+                            addToast(t('An error occurred, try again!'), {
+                                appearance: 'error',
+                                autoDismiss: true,
+                            })
+                        }
+                    }
+                    set_loading_aproved(false)
                     if (receipt.status) {
-                        Approve(voom, 1)
-                        return
+                        addToast(t('The transaction is successfully confirmed.'), {
+                            appearance: 'success',
+                            autoDismiss: true,
+                        })
+                        set_reload(Math.random())
                     } else {
-                        set_loading_aproved(false)
                         addToast(t('An error occurred, try again!'), {
                             appearance: 'error',
                             autoDismiss: true,
                         })
                     }
-                }
+                }).on("error", async (error) => {
+                    set_loading_aproved(false)
+                    let msg = t('An error occurred, try again!')
+                    if (hash !== null) {
+                        msg = await getRevertReason(hash)
+                    }
+                    addToast(msg, {
+                        appearance: 'error',
+                        autoDismiss: true,
+                    })
+                })
+            } catch (error) {
                 set_loading_aproved(false)
-                if (receipt.status) {
+            }
+        } else {
+            const contract = new window.web3Read.eth.Contract(abiToken, usdt)
+            const tx = {
+                from: address,
+                to: usdt,
+                data: contract.methods.approve(addr, ethers.constants.MaxUint256).encodeABI(),
+                gasPrice: gas,
+            }
+            walletconnect.sendTransaction(tx)
+                .then((result) => {
+                    console.log(result)
+                    set_loading_aproved(false)
                     addToast(t('The transaction is successfully confirmed.'), {
                         appearance: 'success',
                         autoDismiss: true,
                     })
                     set_reload(Math.random())
-                } else {
+
+                }).catch((error) => {
+                    set_loading_aproved(false)
                     addToast(t('An error occurred, try again!'), {
                         appearance: 'error',
                         autoDismiss: true,
                     })
-                }
-            }).on("error", async (error) => {
-                set_loading_aproved(false)
-                let msg = t('An error occurred, try again!')
-                if(hash !== null){
-                    msg = await getRevertReason(hash)
-                }
-                addToast(msg, {
-                    appearance: 'error',
-                    autoDismiss: true,
                 })
-            })
-        } catch (error) {
-            set_loading_aproved(false)
         }
     }
 
@@ -161,7 +191,7 @@ const Deposit = (props) => {
                 autoDismiss: true,
             });
             return
-        }        
+        }
         if (paused) {
             addToast(t("Withdrawals are paused at the moment, but you can claim your winnings"), {
                 appearance: "error",
@@ -171,78 +201,106 @@ const Deposit = (props) => {
         }
         set_loading_withdral(true)
         set_hash(null)
-        try {
-            let statusWithdraw = false
-            await voomContract.methods.vooms(address).call().then(async (result) => {
-                if(parseInt(result.withdraw) === 0){
-                    statusWithdraw = true
-                } else if(parseInt(result.withdraw) === 1){
-                    const timeBetweenLastWithdraw = parseFloat((await window.web3.eth.getBlock()).timestamp) - parseFloat(result.dateWithdraw)
-                    if(timeBetweenLastWithdraw >= 86400){
+        if (walletconnect === null) {
+            try {
+                let statusWithdraw = false
+                await voomContract.methods.vooms(address).call().then(async (result) => {
+                    if (parseInt(result.withdraw) === 0) {
                         statusWithdraw = true
+                    } else if (parseInt(result.withdraw) === 1) {
+                        const timeBetweenLastWithdraw = parseFloat((await window.web3.eth.getBlock()).timestamp) - parseFloat(result.dateWithdraw)
+                        if (timeBetweenLastWithdraw >= 86400) {
+                            statusWithdraw = true
+                        } else {
+                            set_loading_withdral(false)
+                            addToast(t("It takes 24 hours from when the withdrawal is requested for it to execute the extraction of its funds from the yields farming"), {
+                                appearance: "error",
+                                autoDismiss: true,
+                            });
+                            return
+                        }
                     } else {
                         set_loading_withdral(false)
-                        addToast(t("It takes 24 hours from when the withdrawal is requested for it to execute the extraction of its funds from the yields farming"), {
+                        addToast(t("You previously withdrew your investment"), {
                             appearance: "error",
                             autoDismiss: true,
                         });
                         return
                     }
-                } else {
-                    set_loading_withdral(false)
-                    addToast(t("You previously withdrew your investment"), {
-                        appearance: "error",
-                        autoDismiss: true,
-                    });
-                    return
-                }
-            })
-            if(statusWithdraw){
-                try {
-                    await voomContract.methods.withdraw().send({
-                        from: address,
-                        value: 0,
-                        gas: 0,
-                        gasPrice: gas
-                    }).on("transactionHash", async h => {
-                        set_hash(h)
-                        addToast(t('Transaction waiting for confirmation.'), {
-                            appearance: 'info',
-                            autoDismiss: true,
-                        })
-                    }).on('receipt', async (receipt) => {
-                        set_loading_withdral(false)
-                        if (receipt.status) {
-                            addToast(t('The transaction is successfully confirmed.'), {
-                                appearance: 'success',
+                })
+                if (statusWithdraw) {
+                    try {
+                        await voomContract.methods.withdraw().send({
+                            from: address,
+                            value: 0,
+                            gas: 0,
+                            gasPrice: gas
+                        }).on("transactionHash", async h => {
+                            set_hash(h)
+                            addToast(t('Transaction waiting for confirmation.'), {
+                                appearance: 'info',
                                 autoDismiss: true,
                             })
-                            set_reload(Math.random())
-                        } else {
-                            addToast(t('An error occurred, try again!'), {
+                        }).on('receipt', async (receipt) => {
+                            set_loading_withdral(false)
+                            if (receipt.status) {
+                                addToast(t('The transaction is successfully confirmed.'), {
+                                    appearance: 'success',
+                                    autoDismiss: true,
+                                })
+                                set_reload(Math.random())
+                            } else {
+                                addToast(t('An error occurred, try again!'), {
+                                    appearance: 'error',
+                                    autoDismiss: true,
+                                })
+                            }
+                        }).on("error", async (error) => {
+                            set_loading_withdral(false)
+                            let msg = t('An error occurred, try again!')
+                            if (hash !== null) {
+                                msg = await getRevertReason(hash)
+                            }
+                            addToast(msg, {
                                 appearance: 'error',
                                 autoDismiss: true,
                             })
-                        }
-                    }).on("error", async (error) => {
+                        })
+                    } catch (error) {
                         set_loading_withdral(false)
-                        let msg = t('An error occurred, try again!')
-                        if(hash !== null){
-                            msg = await getRevertReason(hash)
-                        }
-                        addToast(msg, {
-                            appearance: 'error',
-                            autoDismiss: true,
-                        })                        
-                    })
-                } catch (error) {
+                    }
+                } else {
                     set_loading_withdral(false)
                 }
-            } else {
+            } catch (error) {
                 set_loading_withdral(false)
             }
-        } catch (error) {
-            set_loading_withdral(false)
+        } else {
+            const contract = new window.web3Read.eth.Contract(abiVoom, voom)
+            const tx = {
+                from: address,
+                to: voom,
+                data: contract.methods.withdraw().encodeABI(),
+                gasPrice: gas,
+            }
+            walletconnect.sendTransaction(tx)
+                .then((result) => {
+                    console.log(result)
+                    set_loading_withdral(false)
+                    setShow(false)
+                    addToast(t('The transaction is successfully confirmed.'), {
+                        appearance: 'success',
+                        autoDismiss: true,
+                    })
+                    set_reload(Math.random())
+
+                }).catch((error) => {
+                    set_loading_withdral(false)
+                    addToast(t('An error occurred, try again!'), {
+                        appearance: 'error',
+                        autoDismiss: true,
+                    })
+                })
         }
     }
 
@@ -260,7 +318,14 @@ const Deposit = (props) => {
                 autoDismiss: true,
             });
             return
-        }        
+        }
+        if (tokens <= 0) {
+            addToast(t("Enter the amount of USDT you want to deposit"), {
+                appearance: "error",
+                autoDismiss: true,
+            });
+            return
+        }
         set_loading_deposit(true)
         set_hash(null)
         //let totalTokens = new BigNumber(tokens).times(new BigNumber(10).pow(18)) 
@@ -269,47 +334,73 @@ const Deposit = (props) => {
             totalTokens = maxTokens_ready
         }
         console.log(totalTokens)
-        try {
-            await voomContract.methods.deposit(totalTokens, sponsor).send({
-                from: address,
-                value: 0,
-                gas: 0,
-                gasPrice: gas
-            }).on("transactionHash", async h => {
-                set_hash(h)
-                addToast(t('Transaction waiting for confirmation.'), {
-                    appearance: 'info',
-                    autoDismiss: true,
+        if (walletconnect === null) {
+            try {
+                await voomContract.methods.deposit(totalTokens, sponsor).send({
+                    from: address,
+                    value: 0,
+                    gas: 0,
+                    gasPrice: gas
+                }).on("transactionHash", async h => {
+                    set_hash(h)
+                    addToast(t('Transaction waiting for confirmation.'), {
+                        appearance: 'info',
+                        autoDismiss: true,
+                    })
+                }).on('receipt', async (receipt) => {
+                    set_loading_deposit(false)
+                    setShow(false)
+                    if (receipt.status) {
+                        addToast(t('The transaction is successfully confirmed.'), {
+                            appearance: 'success',
+                            autoDismiss: true,
+                        })
+                        set_reload(Math.random())
+                    } else {
+                        addToast(t('An error occurred, try again!'), {
+                            appearance: 'error',
+                            autoDismiss: true,
+                        })
+                    }
+                }).on("error", async (error) => {
+                    set_loading_deposit(false)
+                    let msg = t('An error occurred, try again!')
+                    if (hash !== null) {
+                        msg = await getRevertReason(hash)
+                    }
+                    addToast(msg, {
+                        appearance: 'error',
+                        autoDismiss: true,
+                    })
                 })
-            }).on('receipt', async (receipt) => {
+            } catch (error) {
                 set_loading_deposit(false)
-                setShow(false)
-                if (receipt.status) {
+            }
+        } else {
+            const contract = new window.web3Read.eth.Contract(abiVoom, voom)
+            const tx = {
+                from: address,
+                to: voom,
+                data: contract.methods.deposit(totalTokens, sponsor).encodeABI(),
+                gasPrice: gas,
+            }
+            walletconnect.sendTransaction(tx)
+                .then((result) => {
+                    set_loading_deposit(false)
+                    setShow(false)
                     addToast(t('The transaction is successfully confirmed.'), {
                         appearance: 'success',
                         autoDismiss: true,
                     })
                     set_reload(Math.random())
-                } else {
+
+                }).catch((error) => {
+                    set_loading_deposit(false)
                     addToast(t('An error occurred, try again!'), {
                         appearance: 'error',
                         autoDismiss: true,
                     })
-                }
-            }).on("error", async (error) => {
-                set_loading_deposit(false)
-                let msg = t('An error occurred, try again!')
-                if(hash !== null){
-                    msg = await getRevertReason(hash)
-                }
-                addToast(msg, {
-                    appearance: 'error',
-                    autoDismiss: true,
                 })
-            })
-        } catch (error) {
-            console.log(error)
-            set_loading_deposit(false)
         }
     }
 
@@ -323,15 +414,15 @@ const Deposit = (props) => {
         const re = /^[0-9-.\b]+$/;
         if (e === '' || re.test(e)) {
             let count = 0
-            for(let i = 0; i < e.length; i++){
-                if(e[i] === "."){
+            for (let i = 0; i < e.length; i++) {
+                if (e[i] === ".") {
                     count++
                 }
             }
-            if(count <= 1){
+            if (count <= 1) {
                 set_tokens(e)
             }
-         }
+        }
     }
 
     return (

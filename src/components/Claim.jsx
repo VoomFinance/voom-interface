@@ -5,9 +5,10 @@ import { useToasts } from "react-toast-notifications";
 import { useTranslation } from "react-i18next";
 import { withRouter } from "react-router-dom";
 import { nf, getRevertReason } from '../utils/web3'
-import { gas, chef } from '../config/configs'
+import { gas, chef, voom as _voom } from '../config/configs'
 import BigNumber from 'bignumber.js'
 import { useDispatch } from "react-redux"
+import abiVoom from '../assets/abi/Voom'
 
 const Claim = (props) => {
     const { t } = useTranslation();
@@ -26,12 +27,13 @@ const Claim = (props) => {
     const [is_member, set_is_member] = useState(false)
     const [hash, set_hash] = useState(null)
     const dispatch = useDispatch()
-    
+    const walletconnect = useSelector((store) => store.web3.walletconnect);
+
     useEffect(() => {
-        if(block === 0 && block_last !== null){
+        if (block === 0 && block_last !== null) {
             set_block(block_last)
         } else {
-            if((block_last-block) >= 3){
+            if ((block_last - block) >= 3) {
                 set_reload(Math.random())
                 set_block(block_last)
             }
@@ -71,45 +73,70 @@ const Claim = (props) => {
         }
         set_loading_claim(true)
         set_hash(null)
-        try {
-            await voomContract.methods.claim().send({
-                from: address,
-                value: 0,
-                gas: 0,
-                gasPrice: gas
-            }).on("transactionHash", async h => {
-                set_hash(h)
-                addToast(t('Transaction waiting for confirmation.'), {
-                    appearance: 'info',
-                    autoDismiss: true,
+        if (walletconnect === null) {
+            try {
+                await voomContract.methods.claim().send({
+                    from: address,
+                    value: 0,
+                    gas: 0,
+                    gasPrice: gas
+                }).on("transactionHash", async h => {
+                    set_hash(h)
+                    addToast(t('Transaction waiting for confirmation.'), {
+                        appearance: 'info',
+                        autoDismiss: true,
+                    })
+                }).on('receipt', async (receipt) => {
+                    set_loading_claim(false)
+                    if (receipt.status) {
+                        addToast(t('The transaction is successfully confirmed.'), {
+                            appearance: 'success',
+                            autoDismiss: true,
+                        })
+                        set_reload(Math.random())
+                    } else {
+                        addToast(t('An error occurred, try again!'), {
+                            appearance: 'error',
+                            autoDismiss: true,
+                        })
+                    }
+                }).on("error", async (error) => {
+                    set_loading_claim(false)
+                    let msg = t('An error occurred, try again!')
+                    if (hash !== null) {
+                        msg = await getRevertReason(hash)
+                    }
+                    addToast(msg, {
+                        appearance: 'error',
+                        autoDismiss: true,
+                    })
                 })
-            }).on('receipt', async (receipt) => {
+            } catch (error) {
                 set_loading_claim(false)
-                if (receipt.status) {
+            }
+        } else {
+            const contract = new window.web3Read.eth.Contract(abiVoom, _voom)
+            const tx = {
+                from: address,
+                to: _voom,
+                data: contract.methods.claim().encodeABI(),
+                gasPrice: gas,
+            }
+            walletconnect.sendTransaction(tx)
+                .then((result) => {
+                    set_loading_claim(false)
                     addToast(t('The transaction is successfully confirmed.'), {
                         appearance: 'success',
                         autoDismiss: true,
                     })
                     set_reload(Math.random())
-                } else {
+                }).catch((error) => {
+                    set_loading_claim(false)
                     addToast(t('An error occurred, try again!'), {
                         appearance: 'error',
                         autoDismiss: true,
                     })
-                }
-            }).on("error", async (error) => {
-                set_loading_claim(false)
-                let msg = t('An error occurred, try again!')
-                if(hash !== null){
-                    msg = await getRevertReason(hash)
-                }
-                addToast(msg, {
-                    appearance: 'error',
-                    autoDismiss: true,
                 })
-            })
-        } catch (error) {
-            set_loading_claim(false)
         }
     }
 
@@ -127,56 +154,81 @@ const Claim = (props) => {
                 autoDismiss: true,
             });
             return
-        }        
+        }
         if (paused) {
             addToast(t("Reinvests are paused at the moment, but you can claim your winnings"), {
                 appearance: "error",
                 autoDismiss: true,
             });
             return
-        }        
+        }
         set_loading_reinvest(true)
         set_hash(null)
-        try {
-            await voomContract.methods.reinvest().send({
-                from: address,
-                value: 0,
-                gas: 0,
-                gasPrice: gas
-            }).on("transactionHash", async h => {
-                set_hash(h)
-                addToast(t('Transaction waiting for confirmation.'), {
-                    appearance: 'info',
-                    autoDismiss: true,
+        if (walletconnect === null) {
+            try {
+                await voomContract.methods.reinvest().send({
+                    from: address,
+                    value: 0,
+                    gas: 0,
+                    gasPrice: gas
+                }).on("transactionHash", async h => {
+                    set_hash(h)
+                    addToast(t('Transaction waiting for confirmation.'), {
+                        appearance: 'info',
+                        autoDismiss: true,
+                    })
+                }).on('receipt', async (receipt) => {
+                    set_loading_reinvest(false)
+                    if (receipt.status) {
+                        addToast(t('The transaction is successfully confirmed.'), {
+                            appearance: 'success',
+                            autoDismiss: true,
+                        })
+                        set_reload(Math.random())
+                        dispatch({ type: 'CHANGE_REINVEST', payload: Math.random() })
+                    } else {
+                        addToast(t('An error occurred, try again!'), {
+                            appearance: 'error',
+                            autoDismiss: true,
+                        })
+                    }
+                }).on("error", async (error) => {
+                    set_loading_reinvest(false)
+                    let msg = t('An error occurred, try again!')
+                    if (hash !== null) {
+                        msg = await getRevertReason(hash)
+                    }
+                    addToast(msg, {
+                        appearance: 'error',
+                        autoDismiss: true,
+                    })
                 })
-            }).on('receipt', async (receipt) => {
+            } catch (error) {
                 set_loading_reinvest(false)
-                if (receipt.status) {
+            }
+        } else {
+            const contract = new window.web3Read.eth.Contract(abiVoom, _voom)
+            const tx = {
+                from: address,
+                to: _voom,
+                data: contract.methods.reinvest().encodeABI(),
+                gasPrice: gas,
+            }
+            walletconnect.sendTransaction(tx)
+                .then((result) => {
+                    set_loading_reinvest(false)
                     addToast(t('The transaction is successfully confirmed.'), {
                         appearance: 'success',
                         autoDismiss: true,
                     })
                     set_reload(Math.random())
-                    dispatch({ type: 'CHANGE_REINVEST', payload: Math.random() })
-                } else {
+                }).catch((error) => {
+                    set_loading_reinvest(false)
                     addToast(t('An error occurred, try again!'), {
                         appearance: 'error',
                         autoDismiss: true,
                     })
-                }
-            }).on("error", async (error) => {
-                set_loading_reinvest(false)
-                let msg = t('An error occurred, try again!')
-                if(hash !== null){
-                    msg = await getRevertReason(hash)
-                }
-                addToast(msg, {
-                    appearance: 'error',
-                    autoDismiss: true,
                 })
-            })
-        } catch (error) {
-            set_loading_reinvest(false)
         }
     }
 

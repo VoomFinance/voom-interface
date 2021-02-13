@@ -9,7 +9,8 @@ import abiVoom from '../assets/abi/Voom'
 import abiMulticall from '../assets/abi/Multicall'
 import BigNumber from 'bignumber.js'
 import { Interface } from '@ethersproject/abi'
-
+import WalletConnect from "@walletconnect/client";
+import QRCodeModal from "@walletconnect/qrcode-modal";
 
 export const getRevertReason = async (txHash) => {
     try {
@@ -178,6 +179,21 @@ export const Web3Auto = () => {
                     } else {
                         dispatch({ type: 'CHANGE_CONNECTED', payload: false })
                         dispatch({ type: "CHANGE_METAMASK", payload: false })
+                    }
+                }
+                if (statusWeb3 === false){
+                    const wc = localStorage.getItem('WALLECTCONNECT')                
+                    if (wc !== null && wc !== undefined) {
+                        let connector = new WalletConnect({
+                            bridge: "https://bridge.walletconnect.org",
+                            qrcodeModal: QRCodeModal
+                          })
+                          if (connector.connected) {
+                            dispatch({ type: "CHANGE_ADDRESS", payload: wc });
+                            dispatch({ type: "CHANGE_CONNECTED", payload: true });
+                            dispatch({ type: "CHANGE_METAMASK", payload: true });
+                            dispatch({ type: "CHANGE_WALLECTCONNECT", payload: connector });
+                          }
                     }
                 }
                 /*if (statusWeb3 === false && await autoBinanceSmartChain() === true) {

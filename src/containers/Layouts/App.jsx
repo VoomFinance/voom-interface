@@ -5,11 +5,28 @@ import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
+import WalletConnect from "@walletconnect/client";
+import QRCodeModal from "@walletconnect/qrcode-modal";
 
 const Layout = (props) => {
     let params = queryString.parse(props.location.search)
     const dispatch = useDispatch()
     const voom = useSelector(store => store.web3.voom)
+
+    useEffect(() => {
+        try {
+            const connector = new WalletConnect({
+                bridge: "https://bridge.walletconnect.org",
+                qrcodeModal: QRCodeModal
+            })
+            if (connector.connected) {
+                connector.killSession()
+                localStorage.removeItem("WALLECTCONNECT")
+            }
+        } catch (error) {
+
+        }
+    }, [])
 
     useEffect(() => {
         dispatch({ type: 'CHANGE_INNER_WIDTH', payload: window.innerWidth })

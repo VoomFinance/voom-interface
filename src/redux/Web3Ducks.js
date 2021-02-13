@@ -10,7 +10,8 @@ const dataState = {
   timestamp: 0,
   token: null,
   voom: null,
-  reinvest: null
+  reinvest: null,
+  walletconnect: null,
 }
 
 const CHANGE_WEB3 = "CHANGE_WEB3"
@@ -25,6 +26,7 @@ const NEW_BLOCK_TIME = 'NEW_BLOCK_TIME'
 const INTERFACE_TOKEN = "INTERFACE_TOKEN"
 const INTERFACE_VOOM = "INTERFACE_VOOM"
 const CHANGE_REINVEST = "CHANGE_REINVEST"
+const CHANGE_WALLECTCONNECT = "CHANGE_WALLECTCONNECT"
 
 export default function reducer(state = dataState, action) {
   switch (action.type) {
@@ -52,6 +54,8 @@ export default function reducer(state = dataState, action) {
       return { ...state, timestamp: action.payload }
     case CHANGE_REINVEST:
       return { ...state, reinvest: action.payload }
+    case CHANGE_WALLECTCONNECT:
+      return { ...state, walletconnect: action.payload }
     default:
       return state
   }
