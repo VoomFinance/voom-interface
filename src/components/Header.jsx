@@ -25,6 +25,7 @@ const Header = (props) => {
                     <Nav className="mr-auto nav_menu">
                         <Nav.Link href="#/">{t("Home")}</Nav.Link>
                         <Nav.Link href="#/vault">{t("Vault")}</Nav.Link>
+                        <Nav.Link href="#/compounder">{t("Compounder")}</Nav.Link>
                         <Nav.Link href="#/network">{t("Network")}</Nav.Link>
                         <Nav.Link href="#/details">{t("Details")}</Nav.Link>
                         <Nav.Link href="https://docs.voom.finance/" target="_blank">{t("Docs")}</Nav.Link>

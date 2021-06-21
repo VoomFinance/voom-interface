@@ -47,19 +47,19 @@ const Footer = () => {
                   type: 'ERC20',
                   options: {
                     address: usdt,
-                    symbol: 'USDT',
+                    symbol: 'BUSD',
                     decimals: 18,
-                    image: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png"
+                    image: "https://s2.coinmarketcap.com/static/img/coins/64x64/4687.png"
                   }
                 }
               })
               if (wasAdded) {
-                addToast(t('USDT added to metamask successfully'), {
+                addToast(t('BUSD added to metamask successfully'), {
                     appearance: 'success',
                     autoDismiss: true,
                 })
               } else {
-                addToast(t("USDT could not be added to metamask"), {
+                addToast(t("BUSD could not be added to metamask"), {
                     appearance: "error",
                     autoDismiss: true,
                 });
@@ -83,7 +83,7 @@ const Footer = () => {
                         <Nav.Link href={`${explorerAddress}${voom}#code`} target="_blank">Voom Contract</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link onClick={(e) => addToken(e)}>{t("Add USDT to metamask")}</Nav.Link>
+                        <Nav.Link onClick={(e) => addToken(e)}>{t("Add BUSD to metamask")}</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link href={medium} target="_blank">Medium</Nav.Link>

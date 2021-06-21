@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from './components/utils/Loading'
 import { showLoading, hideLoading } from './redux/LoadingDucks'
 import { Web3Init, Web3Auto } from './utils/web3'
+import { RefreshContextProvider } from './RefreshContext'
 
 function App() {
   const dispatch = useDispatch()
@@ -12,17 +13,17 @@ function App() {
   dispatch(showLoading())
 
   useEffect(() => {
-    if(isConnected !== null){
+    if (isConnected !== null) {
       dispatch(hideLoading())
     }
   }, [dispatch, isConnected])
 
   return (
-    <>
-    <Web3Init />
-    <Web3Auto />
+    <RefreshContextProvider>
+      <Web3Init />
+      <Web3Auto />
       {isConnected === null ? <Loading /> : <Routes />}
-    </>
+    </RefreshContextProvider>
   )
 }
 

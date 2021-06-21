@@ -58,7 +58,7 @@ const Balance = (props) => {
         if (voom !== null && render === false && isConnected && address !== null) {
             setRender(true)
             if (props.type === "amountDeposited") {
-                Init(voom.methods.vooms(address).call(), "amountDeposited")
+                Init(voom.methods.vooms(address).call(), "amountUser")
             }
             if (props.type === "amountGain") {
                 Init(voom.methods.vooms(address).call(), "amountGain")
@@ -73,7 +73,7 @@ const Balance = (props) => {
                 Init(voom.methods.vooms(address).call(), "amountBonus")
             }
             if (props.type === "global_earnings") {
-                Init(voom.methods.vooms(address).call(), "global_earnings")
+                Init(voom.methods.vooms(address).call(), "globalEarnings")
             }
             if (props.type === "count") {
                 Init(voom.methods.members(address).call(), "count")
@@ -81,12 +81,25 @@ const Balance = (props) => {
             if (props.type === "lastTime") {
                 Init(voom.methods.vooms(address).call(), "lastTime")
             }
+            if (props.type === "Promise") {
+                voom.methods.promiseVoom(address).call().then((p) => {
+                    voom.methods.vooms(address).call().then((c) => {
+                        let _p = parseFloat(window.web3Read.utils.fromWei(p + '', 'ether'))
+                        let _amountGain = parseFloat(window.web3Read.utils.fromWei(c.amountGain + '', 'ether'))
+                        let _amountGainNetwork = parseFloat(window.web3Read.utils.fromWei(c.amountGainNetwork + '', 'ether'))
+                        let _amountBonus = parseFloat(window.web3Read.utils.fromWei(c.amountBonus + '', 'ether'))
+                        let _c = _p - (_amountGain + _amountGainNetwork + _amountBonus)
+                        _c = _c > 0 ? _c : 0
+                        setBalance(_c)
+                    })
+                })
+            }
         } else {
             setBalance(0)
         }
         if (voom !== null) {
             if (props.type === "APY") {
-                Init(voom.methods.dubbing().call(), "apy")
+                //Init(voom.methods.dubbing().call(), "apy")
             }
         }
     }, [voom, props, render, isConnected, address])
@@ -100,6 +113,7 @@ const Balance = (props) => {
                         <div className="global_child_container_values">
                             <span role="img" className="global_child_icon">
                                 {props.type === "APY" && t("🚜")}
+                                {props.type === "Promise" && t("🏆")}
                                 {props.type === "global_earnings" && t("💸")}
                                 {props.type === "amountDeposited" && t("💰")}
                                 {props.type === "amountGain" && t("🤑")}
@@ -112,8 +126,9 @@ const Balance = (props) => {
                             <div className="global_child_main_flex">
                                 <div className="global_child_container_title">
                                     {props.type === "APY" && t("APY")}
+                                    {props.type === "Promise" && t("Profit promise")}
                                     {props.type === "global_earnings" && t("My global earnings")}
-                                    {props.type === "amountDeposited" && t("USDT deposited")}
+                                    {props.type === "amountDeposited" && t("BUSD deposited")}
                                     {props.type === "amountGain" && t("My earnings")}
                                     {props.type === "amountGainNetwork" && t("My network earnings")}
                                     {props.type === "amountBonus" && t("My bonuses from my referrals")}

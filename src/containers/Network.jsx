@@ -34,26 +34,36 @@ const Network = () => {
                         amountBonus: 0,
                         global_earnings: 0,
                         lastTime: 0,
+                        compounder: 0,
                     },
                     title: address,
                     innerWidth: innerWidth,
                     status: false
                 }
+                let compounder = 0
+                await voom.methods.BUSDBalance(address).call().then(async (xBUSD) => {
+                    compounder = xBUSD
+                })
                 await voom.methods.vooms(address).call().then(async (result) => {
                     treeData.amountUser = result.amountUser
-                    treeData.amountDeposited = result.amountDeposited
+                    treeData.amountDeposited = result.amountUser
                     treeData.amountPromise = result.amountPromise
                     treeData.amountGain = result.amountGain
                     treeData.amountGainNetwork = result.amountGainNetwork
                     treeData.amountBonus = result.amountBonus
                     treeData.lastTime = result.lastTime
-                    treeData.global_earnings = result.global_earnings
+                    treeData.global_earnings = result.globalEarnings
                     treeData.status = result.status
+                    treeData.compounder = compounder
                 })
                 await voom.methods.members(address).call().then(async (result) => {
                     if (result.referredUsers > 0) {
                         for (let i = 0; i < result.referredUsers; i++) {
                             await voom.methods.memberChild(result.id, i).call().then(async (r) => {
+                                let compounder = 0
+                                await voom.methods.BUSDBalance(r).call().then(async (xBUSD) => {
+                                    compounder = xBUSD
+                                })
                                 await voom.methods.vooms(r).call().then(async (r) => {
                                     if (r.isExist === true) {
                                         treeData.children.push({
@@ -62,14 +72,15 @@ const Network = () => {
                                             children: [],
                                             data: {
                                                 amountUser: r.amountUser,
-                                                amountDeposited: r.amountDeposited,
+                                                amountDeposited: r.amountUser,
                                                 amountPromise: r.amountPromise,
                                                 amountGain: r.amountGain,
                                                 amountGainNetwork: r.amountGainNetwork,
                                                 amountBonus: r.amountBonus,
                                                 lastTime: r.lastTime,
-                                                global_earnings: r.global_earnings,
+                                                global_earnings: r.globalEarnings,
                                                 status: r.status,
+                                                compounder: compounder
                                             },
                                             title: r.voom,
                                             innerWidth: innerWidth,
@@ -158,6 +169,7 @@ const Network = () => {
                                     <a href="#/network" onClick={(e) => e.preventDefault()} > copy link</a>
                                 </CopyToClipboard>
                             </h3>
+                            <span className="mt-4" />
                             <h3 className="kKRWkn comm_net" onClick={CommissionDetail}>
                                 ℹ️ {t("Read more about the commissions of the unilevel network")}
                             </h3>

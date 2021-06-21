@@ -18,7 +18,14 @@ const Home = () => {
                                 <h3 className="home_container_header_h3">{t("Agricultural Yield Optimizer using the best yield strategies on Binance Smart Chain.")}</h3>
                             </div>
                         </div>
-                        <div className="col-12">
+                        <div className="col-12 ">
+                            <div className="global_father">
+                                <Globals type="tvl" />
+                                <div size="24" className="global_child_separator" />
+                                <Globals type="compounder" />
+                            </div>
+                        </div>                        
+                        <div className="col-12 mt-4">
                             <div className="global_father">
                                 <Globals type="claims" />
                                 <div size="24" className="global_child_separator" />
@@ -29,12 +36,7 @@ const Home = () => {
                             <div className="global_father">
                                 <Globals type="network" />
                                 <div size="24" className="global_child_separator" />
-                                <Globals type="withdrawals" />
-                            </div>
-                        </div>
-                        <div className="col-12 mt-4">
-                            <div className="global_father">
-                                <Globals type="tvl" />
+                                <Globals type="lastMember" />
                             </div>
                         </div>
                     </div>

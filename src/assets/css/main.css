@@ -521,8 +521,12 @@ main {
   display: flex;
   -webkit-box-pack: center;
   justify-content: center;
-  margin-top: 48px;
+  margin-top: 28px;
   width: 100%; }
+
+.linkAnother {
+  cursor: pointer;
+  color: #d16c00; }
 
 .ieRJEt {
   -webkit-box-align: center;
@@ -931,5 +935,56 @@ td {
 
 .comm_net:hover {
   color: #cf9d3e; }
+
+.toastGlobal {
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 99%;
+  z-index: 9;
+  margin-right: 1em;
+  margin-top: 0.5em;
+  z-index: 99999 !important; }
+
+.toast_title {
+  font-size: 0.7em;
+  color: #664200; }
+
+.toast_value {
+  font-size: 0.8em;
+  color: #664200; }
+
+.toast {
+  flex-basis: 350px;
+  max-width: 350px;
+  font-size: .875rem;
+  background-clip: padding-box;
+  border: 1px solid black;
+  box-shadow: 0 0.25rem 0.75rem black;
+  opacity: 0;
+  border-radius: .25rem; }
+
+.toast_info {
+  background-color: #272727;
+  color: #000; }
+
+.toast_success {
+  background-color: #ffb800;
+  color: #000; }
+
+.toast_error {
+  background-color: #ffb800;
+  color: #000; }
+
+.view_Hash {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: row;
+  justify-content: center; }
+
+.view_hash_value {
+  font-size: 0.8em;
+  color: #664200 !important; }
 
 /*# sourceMappingURL=main.css.map */

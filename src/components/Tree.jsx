@@ -8,6 +8,7 @@ import imgBinaryOff from '../assets/images/binary_off.png'
 import { Modal } from 'react-bootstrap';
 import { nf } from '../utils/web3'
 import moment from 'moment'
+import { explorerAddress } from "../config/configs";
 
 const Tree = (props) => {
     const { t } = useTranslation();
@@ -68,6 +69,10 @@ const Tree = (props) => {
                 if (result.referredUsers > 0) {
                     for (let i = 0; i < result.referredUsers; i++) {
                         await voom.methods.memberChild(result.id, i).call().then(async (r) => {
+                            let compounder = 0
+                            await voom.methods.BUSDBalance(r).call().then(async (xBUSD) => {
+                                compounder = xBUSD
+                            })
                             await voom.methods.vooms(r).call().then(async (r) => {
                                 if (r.isExist === true) {
                                     e.children.push({
@@ -76,14 +81,15 @@ const Tree = (props) => {
                                         children: [],
                                         data: {
                                             amountUser: r.amountUser,
-                                            amountDeposited: r.amountDeposited,
+                                            amountDeposited: r.amountUser,
                                             amountPromise: r.amountPromise,
                                             amountGain: r.amountGain,
                                             amountGainNetwork: r.amountGainNetwork,
                                             amountBonus: r.amountBonus,
                                             lastTime: r.lastTime,
-                                            global_earnings: r.global_earnings,
+                                            global_earnings: r.globalEarnings,
                                             status: r.status,
+                                            compounder: compounder
                                         },
                                         title: r.voom,
                                         innerWidth: innerWidth,
@@ -124,8 +130,9 @@ const Tree = (props) => {
                             <div className="row">
                                 <div className="col-12 connected-center connected-center_disconnect">
                                     <p className="connected_title">{t("Account detail")}</p>
-                                    <p className="connected_subtitle">{addr}</p>
-                                    <p className="connected_subtitle">💰 {t("USDT deposited")}: ${weiToEther(data.amountDeposited)}</p>
+                                    <a href={`${explorerAddress}${addr}`} target="_blank" rel="noreferrer" className="connected_subtitle mb-3 link-danger linkAnother">{addr}</a>
+                                    <p className="connected_subtitle">💰 {t("BUSD deposited")}: ${weiToEther(data.amountDeposited)}</p>
+                                    <p className="connected_subtitle">💲 {t("compounder deposited")}: ${weiToEther(data.compounder)}</p>
                                     <p className="connected_subtitle">💸 {t("Global earnings")}: ${weiToEther(data.global_earnings)}</p>
                                     <p className="connected_subtitle">🤑 {t("Earnings")}: ${weiToEther(data.amountGain)}</p>
                                     <p className="connected_subtitle">💵 {t("Network earnings")}: ${weiToEther(data.amountGainNetwork)}</p>

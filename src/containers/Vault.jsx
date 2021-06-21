@@ -11,46 +11,23 @@ const Vault = () => {
     const { t } = useTranslation()
     const voomContract = useSelector((store) => store.web3.voom);
     const [text, set_text] = useState('')
-    const [block, set_block] = useState(0)
-    const block_last = useSelector((store) => store.web3.block)
-    const [reload, set_reload] = useState(0);
 
     useEffect(() => {
-        if (block === 0 && block_last !== null) {
-            set_block(block_last)
-        } else {
-            if ((block_last - block) >= 3) {
-                set_reload(Math.random())
-                set_block(block_last)
-            }
-        }
-    }, [block_last, block])
-
-    useEffect(() => {
-        const apr_percent = (min, max, dec) => {
-            var precision = Math.pow(10, dec);
-            min = min * precision;
-            max = max * precision;
-            return Math.floor(Math.random() * (max - min + 1) + min) / precision;
-        }
         const init = async () => {
             let p = 0
             try {
                 await voomContract.methods.daily().call().then(async (result) => {
                     p = parseFloat(window.web3Read.utils.fromWei(result + '', 'ether'))
-                    const min = p - (p * 5 / 100)
-                    const max = p + (p * 20 / 100)
-                    p = apr_percent(min, max, 2)
                 })
             } catch (error) {
                 p = 0
             }
-            let _t = t("Our USDT farm yields maximizer is currently yielding 111 percent per day.")
+            let _t = t("Our BUSD farm yields maximizer is currently yielding 111 percent per day.")
             _t = _t.replace('111', p)
             set_text(_t)
         }
         init()
-    }, [voomContract, t, reload])
+    }, [voomContract, t])
 
     const openDetail = () => {
         window.open(daily)
@@ -64,8 +41,8 @@ const Vault = () => {
                         <div className="col-12">
                             <div className="home_container_header">
                                 <div className="home_container_header_logo"><img src={imgLogo} height="120" alt="" /></div>
-                                <h1 className="home_container_header_h1">{t("USDT Vault")}</h1>
-                                <h3 className="home_container_header_h3">{t("Invest USDT and get a daily percentage of yield crop profit.")}</h3>
+                                <h1 className="home_container_header_h1">{t("BUSD Vault")}</h1>
+                                <h3 className="home_container_header_h3">{t("Invest BUSD and get a daily percentage of yield crop profit.")}</h3>
                             </div>
                         </div>
                         <div className="col-12 container_vaults">
@@ -77,9 +54,14 @@ const Vault = () => {
                         </div>
                         <div className="col-12 mt-5 mb-5 container_vaults">
                             <h3 className="kKRWkn">💣 {text}</h3>
-                            <h3 className="kKRWkn comm_net" onClick={openDetail}>
-                                ℹ️ {t("Read more about calculating the daily percentage")}
+                            <span className="mt-4" />
+                            <h3 className="kKRWkn comm_net mb-4" onClick={openDetail}>
+                                🔍 {t("Know the percentages paid in the last days")}.
                             </h3>
+                            <h3 className="kKRWkn comm_net" onClick={openDetail}>
+                                ℹ️ {t("Read more about calculating the daily percentage")}.
+                            </h3>
+                            
                         </div>
                     </div>
                 </div>
